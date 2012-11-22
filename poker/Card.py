@@ -4,6 +4,11 @@ class Card:
 		self.__value = value
 	
 	def suit(self):
-		return suit
+		return self.__suit
 	def value(self):
-		return value
+		return self.__value
+
+	def image_path(self):
+		result = "images/cards/h/"
+		result += str(self.__value)
+		return result
