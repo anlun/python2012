@@ -5,6 +5,7 @@ class Card:
 	
 	def suit(self):
 		return self.__suit
+
 	def value(self):
 		return self.__value
 
