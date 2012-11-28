@@ -11,6 +11,11 @@ class LogAnalyzer:
 		self.__ante = 0
 		self.__name = name
 
+		# 0 - no blind
+		# 1 - small blind
+		# 2 - big blind
+		self.__cur_blind = 2
+
 	def new_round(self):
 		self.__hand_cards = []
 		self.__opened_cards = []
@@ -37,6 +42,12 @@ class LogAnalyzer:
 
 	def set_ante(self, ante_value):
 		self.__ante = ante_value
+	
+	def ante(self):
+		return self.__ante
+
+	def cur_blind(self):
+		return self.__cur_blind
 
 	def opened_cards(self):
 		""" Returns the list of already opened cards. """
