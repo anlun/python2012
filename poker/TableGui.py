@@ -11,52 +11,72 @@ class TableGui:
 	card_height = 100
 	card_width = 75
 
+	class MainPlayerInfo:
+		def __init__(self, scene, analyzer, x, y):
+			self.__scene = scene
+			self.__pos = (x, y)
+			self.__analyzer = analyzer
+
+			self.__init_player_background()
+			self.__init_hand_card_view()
+			self.__init_bank_size_view()
+			self.__init_ante_view()
+			self.__init_blind_view()
+
+		def __init_player_background(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__player_background = QGraphicsRectItem(x - 10, y - 10, TableGui.card_width * 3 + 20, TableGui.card_height + 50)
+			self.__player_background.setBrush(Qt.yellow)
+			self.__scene.addItem(self.__player_background)
+
+		def __init_hand_card_view(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__hand = self.__analyzer.hand_cards()
+			self.__hand_pixmaps = []
+
+			cur_card_x = x
+			for card in self.__hand:
+				pixmap_item = QGraphicsPixmapItem(QPixmap(card.image_path()).scaledToHeight(TableGui.card_height))
+				pixmap_item.setPos(cur_card_x, y)
+				self.__scene.addItem(pixmap_item)
+				self.__hand_pixmaps.append(pixmap_item)
+
+				cur_card_x += TableGui.card_width
+
+		def __init_bank_size_view(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__bank_text = QGraphicsTextItem("Bank: " + str(self.__analyzer.many()))
+			self.__bank_text.setPos(x, y + TableGui.card_height)
+			self.__scene.addItem(self.__bank_text)
+
+		def __init_ante_view(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__ante_text = QGraphicsTextItem("Ante: " + str(self.__analyzer.ante()))
+			self.__ante_text.setPos(x, y + TableGui.card_height + 20)
+			self.__scene.addItem(self.__ante_text)
+
+		def __init_blind_view(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__blind = QGraphicsPixmapItem(QPixmap())
+			if self.__analyzer.cur_blind() == 1:
+				self.__blind = QGraphicsPixmapItem(QPixmap('images/littleblind.jpg').scaledToWidth(TableGui.card_width))
+			elif self.__analyzer.cur_blind() == 2:
+				self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.card_width))
+			self.__blind.setPos(x + 2 * TableGui.card_width, y)
+			self.__scene.addItem(self.__blind)			
+
+
 	def __init__(self, log_analyzer):
 		self.__analyzer = log_analyzer
 		
 
 	def changeTable(self):
 		self.__table_image.setPixmap(QPixmap("table1.png"))
-
-	def add_player_info(self, x, y):
-		# TODO: maybe delete previous elements
-
-		# Background
-		self.__player_background = QGraphicsRectItem(x - 10, y - 10, self.card_width * 3 + 20, self.card_height + 50)
-		self.__player_background.setBrush(Qt.yellow)
-		self.__scene.addItem(self.__player_background)
-
-		# Hand cards
-		self.__hand = self.__analyzer.hand_cards() 
-		self.__hand_pixmaps = []
-
-		cur_card_x = x
-		for card in self.__hand:
-			pixmap_item = QGraphicsPixmapItem(QPixmap(card.image_path()).scaledToHeight(self.card_height))
-			pixmap_item.setPos(cur_card_x, y)
-			self.__scene.addItem(pixmap_item)
-			self.__hand_pixmaps.append(pixmap_item)
-
-			cur_card_x += self.card_width
-
-		# Bank size
-		self.__bank_text = QGraphicsTextItem("Bank: " + str(self.__analyzer.many()))
-		self.__bank_text.setPos(x, y + self.card_height)
-		self.__scene.addItem(self.__bank_text)
-
-		# Current ante
-		self.__ante_text = QGraphicsTextItem("Ante: " + str(self.__analyzer.ante()))
-		self.__ante_text.setPos(x, y + self.card_height + 20)
-		self.__scene.addItem(self.__ante_text)
-
-		# Blind
-		self.__blind = QGraphicsPixmapItem(QPixmap())
-		if self.__analyzer.cur_blind() == 1:
-			self.__blind = QGraphicsPixmapItem(QPixmap('images/littleblind.jpg').scaledToWidth(self.card_width))
-		elif self.__analyzer.cur_blind() == 2:
-			self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(self.card_width))
-		self.__blind.setPos(x + 2 * self.card_width, y)
-		self.__scene.addItem(self.__blind)
 
 	def start(self):
 		app = QApplication(sys.argv)
@@ -67,7 +87,7 @@ class TableGui:
 		self.__table_image = QGraphicsPixmapItem(QPixmap("table.png"))
 		self.__scene.addItem(self.__table_image)
 
-		self.add_player_info(100, 100)
+		playerInfo = TableGui.MainPlayerInfo(self.__scene, self.__analyzer, 100, 100)
 
 		button = QPushButton("new game")
 		self.__scene.addWidget(button)
