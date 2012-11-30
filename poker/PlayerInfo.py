@@ -2,8 +2,6 @@
 
 __author__ = "anlun"
 
-from Card import *
-
 class AbstractPlayerInfo:
 	def name(self):
 		raise NotImplementedError()
@@ -17,6 +15,8 @@ class AbstractPlayerInfo:
 		raise NotImplementedError()
 
 class PlayerInfo(AbstractPlayerInfo):
+	# TODO: сделать сигналы по изменению для PlayerInfoView
+
 	def __init__(self, name, hand_cards, many, blind = 0, ante = 0):
 		self.__name       = name
 		self.__hand_cards = hand_cards
