@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+__author__ = 'anlun'
+
 class Card:
 	def __init__(self, suit, value):
 		self.__suit = suit
