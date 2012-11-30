@@ -11,6 +11,26 @@ class TableGui:
 	card_height = 100
 	card_width = 75
 
+	class PlayerInfo:
+		def __init__(self, scene, analyzer, x, y):
+			self.__scene = scene
+			self.__pos = (x, y)
+			self.__analyzer = analyzer
+
+			self.__init_player_background()
+			self.__init_hand_card_view()
+			self.__init_bank_size_view()
+			self.__init_ante_view()
+			self.__init_blind_view()
+
+		def __init_player_background(self):
+			x = self.__pos[0]
+			y = self.__pos[1]
+			self.__player_background = QGraphicsRectItem(x - 10, y - 10, TableGui.card_width * 3 + 20, TableGui.card_height + 50)
+			self.__player_background.setBrush(Qt.yellow)
+			self.__scene.addItem(self.__player_background)
+
+
 	class MainPlayerInfo:
 		def __init__(self, scene, analyzer, x, y):
 			self.__scene = scene
