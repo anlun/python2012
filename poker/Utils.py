@@ -1,6 +1,7 @@
 __author__ = 'nk-karpov'
 
 from Card import *
+from random import *
 
 value_to_int = {
 		'2':0,
@@ -54,11 +55,14 @@ values = ('2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k', 'a')
 suit_masks  = {}
 value_masks = {}
 initializ = False
+random = None
 
 def init():
-	global initializ
+	global random, initializ
+	random = Random()
+	random.seed(239)
 	if initializ:
-		return
+		return None
 	initializ = True
 	for suit in suits:
 		tmp = 0
@@ -142,10 +146,8 @@ def cmp_high_card(first_list, second_list, limit):
 			return 1
 	return 0
 
-
-
-
 def cmp_hand(first_list, second_list):
+	init()
 	mask_of_first = get_mask_of_cards(first_list)
 	mask_of_second = get_mask_of_cards(second_list)
 	# straight flush
@@ -298,4 +300,23 @@ def get_mask_of_cards(cards):
 	result = 0
 	for card in cards:
 		result |= 1 << bit_count(card)
+	return result
+
+def random_shuffle(deck):
+	for i in xrange(len(deck)):
+		pos = randint(0, i)
+		deck[i], deck[pos] = deck[pos], deck[i]
+	return deck
+
+def generate_deck():
+	result = []
+	for suit in suits:
+		for value in values:
+			result.append(Card(suit, value))
+	return result
+
+def top_of_deck(deck, limit):
+	result = []
+	for i in xrange(limit):
+		result.append(deck[i])
 	return result
