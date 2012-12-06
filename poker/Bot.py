@@ -89,21 +89,38 @@ class Bot(Player):
 					self.__check_or_call__(value)
 				else:
 					self.__fold__()
-		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['j']):
+		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['q']):
 			if count_raise == 0:
 				if position <= 5:
-
+					return self.__fold__()
 				else:
 					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
 			else:
 				return self.__fold__()
 
+		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['j']):
+			if count_raise == 0:
+				if position <= 5:
+					return self.__fold__()
+				else:
+					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
+			else:
+				return self.__fold__()
+
+		if bit_count(mask & value_masks['k']) == 1 and bit_count(mask & value_masks['q']):
+			if count_raise == 0:
+				if position <= 5:
+					return self.__fold__()
+				else:
+					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
+			else:
+				return self.__fold__()
 
 	def turn_flop(self, value):
 		total = len(suits) * len(values)
 		mult = 2. / (total - 5) / (total - 6)
 		hand_mask = get_mask_of_cards(self.store.hand_cards())
-		opened_mask = get_mask_of_cards(self.store.opened_cards())
+		opened_mask = get_mask_of_cards(self.table_info.opened_cards())
 		probablity = 0.
 		for i in xrange(52):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
@@ -112,7 +129,7 @@ class Bot(Player):
 				if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
 					continue
 				enemy_mask = (1 << i) | (1 << j)
-				probablity += self.go(hand_mask, enemy_mask, opened_mask)
+				probablity += self.btc(hand_mask, enemy_mask, opened_mask)
 		probablity *= mult
 		if probablity > 0.75:
 			return self.__raise__(self.table_info.big_blind() * 4 + value)
@@ -128,7 +145,7 @@ class Bot(Player):
 		total = len(suits) * len(values)
 		mult = 2. / (total - 6) / (total - 7)
 		hand_mask = get_mask_of_cards(self.store.hand_cards())
-		opened_mask = get_mask_of_cards(self.store.opened_cards())
+		opened_mask = get_mask_of_cards(self.table_info.opened_cards())
 		probability = 0.
 		for i in xrange(52):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
@@ -153,7 +170,7 @@ class Bot(Player):
 		total = len(suits) * len(values)
 		mult = 2. / (total - 7) / (total - 8)
 		hand_mask = get_mask_of_cards(self.store.hand_cards())
-		opened_mask = get_mask_of_cards(self.store.opened_cards())
+		opened_mask = get_mask_of_cards(self.table_info.opened_cards())
 		probability = 0.
 		for i in xrange(52):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
