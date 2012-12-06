@@ -9,6 +9,8 @@ class TableInfo:
 	def __init__(self):
 		# TODO: init current player // PlayerInfo
 		# TODO: init enemy players (self.__enemy_list) // PlayerInfo
+
+		# TODO: Добавить обработку обновления открытых карт для TableGui
 		self.__client_player = []
 		self.__enemy_list = []
 
@@ -26,6 +28,14 @@ class TableInfo:
 		self.__players.append(PlayerInfo('8', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
 
 		self.__player_order_dict = {}
+
+		# self.__opened_cards = []
+		self.__opened_cards = [Card('h', 'a'), Card('c', '9'), Card('s', 'j'), Card('d', 'k'), Card('h', 'q')]
+		self.__bank = 0
+
+		# crl - change receive list
+		self.__crl_cards = []
+		self.__crl_bank  = []
 
 	def players(self):
 		return self.__players
@@ -50,7 +60,31 @@ class TableInfo:
 		pass
 
 	def opened_cards(self):
-		pass
+		return self.__opened_cards
+
+	def add_opened_card(self, card):
+		self.__opened_cards.append(card)
+		for cr in self.__crl_cards:
+			cr.opened_cards_changed()
+
+	def set_opened_cards(self, cards):
+		self.__opened_cards = cards
+		for cr in self.__crl_cards:
+			cr.opened_cards_changed()
+
+	def add_crl_opened_cards(self, crl_member):
+		self.__crl_cards.append(crl_member)
+
+	def bank(self):
+		return self.__bank
+
+	def set_bank(self, bank):
+		self.__bank = bank
+		for cr in self.__crl_bank:
+			cr.bank_changed()
+
+	def add_crl_bank(self, crl_member):
+		self.__crl_bank.append(crl_member)
 
 	def player_order(self, player_name):
 		if player_name in self.__player_order_dict:
