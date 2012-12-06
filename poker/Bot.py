@@ -15,25 +15,22 @@ class Bot(Player):
 	def __init__(self, name, table_info):
 		Player.__init__(self, name, table_info)
 		self.store = PlayerInfo(name)
-		self.fours = list()
-		self.suits = list()
 		self.table_info = table_info
-		for i in values:
-			list_card = []
-			for j in suits:
-				list_card.append(Card(j, i))
-			self.fours.append(get_mask_of_cards(list_card))
+		init()
 
+	def count_raise(self):
+		log_turn = table_info.turns()
+		for turn in table
 	def turn_preflop(self):
-		count_raise = 0
+		count_raise = self.count_raise()
 		position = self.table_info.get_position(self.store.name())
 		mask = get_mask_of_cards(self.store.hand_cards())
-		aa = bit_count(mask & self.fours[12]) == 2
-		kk = bit_count(mask & self.fours[11]) == 2
-		qq = bit_count(mask & self.fours[10]) == 2
-		ak = bit_count(mask & (self.fours[11] | self.fours[12])) == 2
-		jj = bit_count(mask & self.fours[9]) == 2
-		tt = bit_count(mask & self.fours[8]) == 2
+		aa = bit_count(mask & value_masks['a']) == 2
+		kk = bit_count(mask & value_masks['k']) == 2
+		qq = bit_count(mask & value_masks['q']) == 2
+		ak = bit_count(mask & (value_masks['a'] | value_masks['k'])) == 2
+		jj = bit_count(mask & value_masks['j']) == 2
+		tt = bit_count(mask & value_masks['10']) == 2
 		if aa | kk:
 			if count_raise == 0:
 				return self.__raise__(self.table_info.big_blind * 4)
