@@ -1,26 +1,24 @@
 __author__ = 'nk-karpov'
 
 #from TableInfo import *
+from Turn import *
 
 class Player:
 
 	def __init__(self, name, table_info):
 		pass
-	def __check_or_call__(self):
-		return ["check or call", None]
+	def __check_or_call__(self, value):
+		return Turn("check or call", value)
 
 	def __fold__(self):
-		return ["fold", None]
+		return Turn("fold", 0)
 
 	def __raise__(self, value):
-		return ["raise", value]
-	def __allin__(self):
-		pass #TODO protocol
-	def turn(self):
-		pass #TODO override
-
-	def add_message(self, message):
-		pass #TODO override and protocol all logica with analyzer and gui
+		return Turn("raise", value)
+	def __allin__(self, value):
+		return Turn("allin", value)
+	def turn(self, value):
+		raise NotImplementedError
 
 #	def wait(self):
 #		TODO protocol
