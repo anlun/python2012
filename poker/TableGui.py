@@ -137,6 +137,8 @@ class TableGui:
 			self.__scene = scene
 			self.__table_info = table_info
 
+			table_info.add_crl_opened_cards(self)
+
 			self.__card_view = []
 			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
 			self.__scene.addItem(self.__card_view[0])
