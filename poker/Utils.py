@@ -126,7 +126,7 @@ def is_three(list_of_cards, value):
 
 def is_two_pair(list_of_cards, first_value, second_value):
 	mask = get_mask_of_cards(list_of_cards)
-	return bit_count(value_masks[first_value] & mask) >= 2 && bit_count(value_masks[second_value] & mask) >= 2
+	return bit_count(value_masks[first_value] & mask) >= 2 and bit_count(value_masks[second_value] & mask) >= 2
 
 def is_pair(list_of_cards, value):
 	mask = get_mask_of_cards(list_of_cards)
