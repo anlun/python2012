@@ -90,7 +90,7 @@ class TableInfo:
 		if player_name in self.__player_order_dict:
 			return self.__player_order_dict[player_name]
 		return -1
-
+	
 	def __exec_msg(self):
 		pass
 

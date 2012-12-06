@@ -18,9 +18,11 @@ class Bot(Player):
 		self.table_info = table_info
 		init()
 
-	def count_raise(self):
-		log_turn = table_info.turns()
-		for turn in table
+#	def count_raise(self):
+#		log_turn = table_info.turns()
+#		result = 0
+# 		for turn in table:
+#			if turn.
 	def turn_preflop(self):
 		count_raise = self.count_raise()
 		position = self.table_info.get_position(self.store.name())
