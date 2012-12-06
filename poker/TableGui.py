@@ -10,8 +10,18 @@ from TableInfo import *
 from PlayerInfo import *
 
 class TableGui:
-	card_height = 100
-	card_width  = 75
+	card_height = 70
+	card_width  = 50
+	blind_size  = 45
+
+	info_height = 150
+	info_width  = 150
+	name_height = 20
+
+	center_x = 300
+	center_y = 200
+
+	table_card_coef = 1.5
 
 	class PlayerInfoView:
 		def __init__(self, player_info, scene, x, y):
@@ -34,7 +44,9 @@ class TableGui:
 		def __init_player_background(self):
 			x = self.__pos[0]
 			y = self.__pos[1]
-			self.__player_background = QGraphicsRectItem(x - 20, y - 20, TableGui.card_width * 3 + 40, TableGui.card_height + 70)
+			# self.__player_background = QGraphicsRectItem(x - 20, y - 20, TableGui.card_width * 3 + 40, TableGui.card_height + 70)
+			self.__player_background = QGraphicsRectItem(x, y, TableGui.info_width, TableGui.info_height)
+
 			self.__player_background.setBrush(Qt.green)
 			self.__scene.addItem(self.__player_background)
 
@@ -42,12 +54,12 @@ class TableGui:
 			x = self.__pos[0]
 			y = self.__pos[1]
 			self.__name_view = QGraphicsTextItem(self.__player_info.name())
-			self.__name_view.setPos(x, y - 20)
+			self.__name_view.setPos(x, y)
 			self.__scene.addItem(self.__name_view)
 
 		def __init_hand_card_view(self):
-			x = self.__pos[0]
-			y = self.__pos[1]
+			x = self.__pos[0] + TableGui.name_height
+			y = self.__pos[1] + TableGui.name_height
 			self.__hand = self.__player_info.hand_cards()
 			self.__hand_pixmaps = []
 
@@ -93,32 +105,80 @@ class TableGui:
 
 		def many_changed(self):
 			many = self.__player_info.many()
-			self.__ante_text.setPlainText('Bank: ' + str(ante))
+			self.__many_text.setPlainText('Bank: ' + str(many))
 
 		def __init_bank_size_view(self):
 			x = self.__pos[0]
-			y = self.__pos[1]
+			y = self.__pos[1] + TableGui.name_height
 			self.__bank_text = QGraphicsTextItem('Bank: ' + str(self.__player_info.many()))
 			self.__bank_text.setPos(x, y + TableGui.card_height)
 			self.__scene.addItem(self.__bank_text)
 
 		def __init_ante_view(self):
 			x = self.__pos[0]
-			y = self.__pos[1]
+			y = self.__pos[1] + TableGui.name_height
 			self.__ante_text = QGraphicsTextItem('Ante: ' + str(self.__player_info.ante()))
-			self.__ante_text.setPos(x, y + TableGui.card_height + 20)
+			self.__ante_text.setPos(x, y + TableGui.card_height + TableGui.name_height)
 			self.__scene.addItem(self.__ante_text)
 
 		def __init_blind_view(self):
 			x = self.__pos[0]
-			y = self.__pos[1]
+			y = self.__pos[1] + TableGui.name_height
 			self.__blind = QGraphicsPixmapItem(QPixmap())
 			if self.__player_info.blind() == 1:
-				self.__blind = QGraphicsPixmapItem(QPixmap('images/littleblind.jpg').scaledToWidth(TableGui.card_width))
+				self.__blind = QGraphicsPixmapItem(QPixmap('images/littleblind.jpg').scaledToWidth(TableGui.blind_size))
 			elif self.__player_info.blind() == 2:
-				self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.card_width))
-			self.__blind.setPos(x + 2 * TableGui.card_width, y)
+				self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.blind_size))
+			self.__blind.setPos(x + 2 * TableGui.card_width, y + TableGui.card_height * 1.2)
 			self.__scene.addItem(self.__blind)		
+
+	class OpenedCardView:
+		def __init__(self, scene, table_info):
+			self.__scene = scene
+			self.__table_info = table_info
+
+			self.__card_view = []
+			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
+			self.__scene.addItem(self.__card_view[0])
+			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
+			self.__scene.addItem(self.__card_view[1])
+			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
+			self.__scene.addItem(self.__card_view[2])
+			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
+			self.__scene.addItem(self.__card_view[3])
+			self.__card_view.append(QGraphicsPixmapItem(QPixmap()))
+			self.__scene.addItem(self.__card_view[4])
+
+			self.__card_view[0].setPos(TableGui.center_x - TableGui.card_width *     TableGui.table_card_coef, TableGui.center_y - TableGui.card_height / 2)
+			self.__card_view[1].setPos(TableGui.center_x,                                                      TableGui.center_y - TableGui.card_height / 2)
+			self.__card_view[2].setPos(TableGui.center_x + TableGui.card_width *     TableGui.table_card_coef, TableGui.center_y - TableGui.card_height / 2)
+			self.__card_view[3].setPos(TableGui.center_x + TableGui.card_width * 2 * TableGui.table_card_coef, TableGui.center_y - TableGui.card_height / 2)
+			self.__card_view[4].setPos(TableGui.center_x + TableGui.card_width * 3 * TableGui.table_card_coef, TableGui.center_y - TableGui.card_height / 2)
+
+			self.opened_cards_changed()
+
+		def opened_cards_changed(self):
+			i = 0
+			for card in self.__table_info.opened_cards():
+				self.__card_view[i].setPixmap(QPixmap(card.image_path()).scaledToHeight(TableGui.card_height * TableGui.table_card_coef))
+				i += 1
+
+	class BankView:
+		def __init__(self, scene, table_info):
+			self.__scene = scene
+			self.__table_info = table_info
+
+			self.__bank_text = QGraphicsTextItem('Bank: %d' % table_info.bank())
+			self.__bank_text.setPos(TableGui.center_x, TableGui.center_y + TableGui.card_height)
+			self.__scene.addItem(self.__bank_text)
+
+		def bank_changed(self):
+			self.__bank_text,setPlainText('Bank: %d' % table_info.bank())
+
+	# class DecisionBlock:
+		# def __init__(self, scene):
+					
+
 
 	def __init__(self, table_info):
 		self.__table_info = table_info
@@ -130,26 +190,26 @@ class TableGui:
 		app = QApplication(sys.argv)
 		
 		self.__scene = QGraphicsScene()
-		self.__view = QGraphicsView(self.__scene)
+		self.__view  = QGraphicsView(self.__scene)
 		
 		self.__table_image = QGraphicsPixmapItem(QPixmap('table.png'))
-		center_x = 300
-		center_y = 200
-
 		self.__scene.addItem(self.__table_image)
 
 		angle = math.pi * 2 / self.__table_info.player_count()
-		radius_x = 450
-		radius_y = 300
+		radius_x = 400
+		radius_y = 250
 		cur_angle = math.pi / 2
 		for player in self.__table_info.players():
 			playerInfoView = TableGui.PlayerInfoView(
 				player
 				, self.__scene
-				, center_x + radius_x * math.cos(cur_angle)
-				, center_y + radius_y * math.sin(cur_angle)
+				, TableGui.center_x + radius_x * math.cos(cur_angle)
+				, TableGui.center_y + radius_y * math.sin(cur_angle)
 				)
 			cur_angle += angle
+
+		opened_card_view = TableGui.OpenedCardView(self.__scene, self.__table_info)
+		bank_view = TableGui.BankView(self.__scene, self.__table_info)
 
 		button = QPushButton('new game')
 		self.__scene.addWidget(button)

@@ -9,6 +9,8 @@ class TableInfo:
 	def __init__(self):
 		# TODO: init current player // PlayerInfo
 		# TODO: init enemy players (self.__enemy_list) // PlayerInfo
+
+		# TODO: Добавить обработку обновления открытых карт для TableGui
 		self.__client_player = []
 		self.__enemy_list = []
 
@@ -50,7 +52,11 @@ class TableInfo:
 		pass
 
 	def opened_cards(self):
-		pass
+		# return [Card('h', 'a'), Card('c', '9'), Card('s', 'j')]
+		return [Card('h', 'a'), Card('c', '9'), Card('s', 'j'), Card('d', 'k'), Card('h', 'q')]
+
+	def bank(self):
+		return 10100123213
 
 	def player_order(self, player_name):
 		if player_name in self.__player_order_dict:
