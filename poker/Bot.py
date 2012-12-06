@@ -65,8 +65,7 @@ class Bot(Player):
 		return self.__fold__()
 
 	def turn_flop(self):
-
-		return __check_or_call__()
+		return self.__check_or_call__()
 	def turn(self):
 		number_cards_on_table = len(self.table_info.opened_cards())
 		if number_cards_on_table == 0:
