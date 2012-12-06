@@ -26,7 +26,7 @@ class Bot(Player):
 
 	def turn_preflop(self):
 		count_raise = 0
-		position = self.table_info.get_position(name)
+		position = self.table_info.get_position(self.store.name())
 		mask = get_mask_of_cards(self.store.hand_cards())
 		aa = bit_count(mask & self.fours[12]) == 2
 		kk = bit_count(mask & self.fours[11]) == 2
@@ -73,7 +73,7 @@ class Bot(Player):
 		if number_cards_on_table == 0:
 			return self.turn_preflop()
 		elif number_cards_on_table == 3:
-			self.__check_or_call__() # TODO
+			self.__check_or_call__()
 		elif number_cards_on_table == 4:
 			self.__check_or_call__()
 		elif number_cards_on_table == 5:
