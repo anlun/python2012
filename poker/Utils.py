@@ -90,6 +90,7 @@ def is_full_house(list_of_cards, three, pair):
 def is_flush(list_of_cards, suit):
 	raise NotImplementedError
 def is_straight(list_of_cards, start):
+	raise NotImplementedError
 
 def cmp_high_card(first_list, second_list, limit):
 	sorted(first_list, key = lambda x: -value_to_int[x.value()])
