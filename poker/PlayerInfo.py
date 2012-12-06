@@ -15,6 +15,8 @@ class PlayerInfo():
 		self.__ante       = ante
 		self.__is_hand_hidden = is_hand_hidden
 
+		self.__is_alive = True
+
 		# crl - change receive list
 		self.__crl_cards = []
 		self.__crl_many  = []
@@ -33,6 +35,12 @@ class PlayerInfo():
 		return self.__ante
 	def is_hand_hidden(self):
 		return self.__is_hand_hidden
+
+	def is_alive(self):
+		return self.__is_alive
+	def set_is_alive(self, is_alive):
+		self.__is_alive = is_alive
+		# TODO: менять GUI
 
 	# __name is unchangable
 	def set_hand_cards(self, hand_cards):

@@ -88,7 +88,6 @@ class TableGui:
 					picture_path = card.jacket_image_path()
 
 				self.__hand_pixmaps[i].setPixmap(QPixmap(picture_path).scaledToHeight(TableGui.card_height))
-
 				i += 1
 
 

@@ -4,9 +4,13 @@ __author__ = 'nk-karpov'
 from Turn import *
 
 class Player:
+	def __init__(self, player_info, table_info):
+		self.__player_info = player_info
+		self.__table_info  = table_info
 
-	def __init__(self, name, table_info):
-		pass
+	def player_info(self):
+		return self.__player_info
+
 	def __check_or_call__(self, value):
 		return Turn("check or call", value)
 
