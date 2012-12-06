@@ -79,28 +79,58 @@ def bit_complete(mask):
 	return res
 
 def is_straight_flush(list_of_cards, start):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	for suit in suits:
+		target = 0
+		for i in xrange(5):
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+		if mask & target == target:
+			return True
+		else:
+			continue
+	return False
 
 def is_four(list_of_cards, value):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	target = 0
+	for suit in suits:
+		target |= 1 << code_of_card(Card(suit, value))
+	return  mask & target == target
 
 def is_full_house(list_of_cards, three, pair):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	if bit_count(value_masks[three] & mask) >= 3:
+		return False
+	target = 0
+	for suit in suits:
+		target |= 1 << code_of_card(Card(suit, pair))
+	return bit_count(value_masks[pair] & mask) >= 2
 
 def is_flush(list_of_cards, suit):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(mask & suit_masks[suit]) >= 5
 
 def is_straight(list_of_cards, start):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	for i in xrange(5):
+		target = 0
+		for suit in suits:
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+		if target & mask == 0:
+			return False
+	return True
 
 def is_three(list_of_cards, value):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[value] & mask) >= 3
 
 def is_two_pair(list_of_cards, first_value, second_value):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[first_value] & mask) >= 2 && bit_count(value_masks[second_value] & mask) >= 2
 
 def is_pair(list_of_cards, value):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[value] & mask) >= 2
 
 def cmp_high_card(first_list, second_list, limit):
 	sorted(first_list, key = lambda x: -value_to_int[x.value()])
