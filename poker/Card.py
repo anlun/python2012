@@ -14,6 +14,5 @@ class Card:
 		return self.__value
 
 	def image_path(self):
-		result = "images/cards/h/"
-		result += str(self.__value)
+		result = "images/cards/%s/%s" % (self.__suit, self.__value)
 		return result

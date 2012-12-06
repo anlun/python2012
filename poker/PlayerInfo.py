@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from Card import Card
+
 __author__ = "anlun"
 
-class AbstractPlayerInfo:
-	def name(self):
-		raise NotImplementedError()
-	def hand_cards(self):
-		raise NotImplementedError()
-	def many(self):
-		raise NotImplementedError()
-	def blind(self):
-		raise NotImplementedError()
-	def ante(self):
-		raise NotImplementedError()
-
-class PlayerInfo(AbstractPlayerInfo):
-	# TODO: сделать сигналы по изменению для PlayerInfoView
+class PlayerInfo():
+	# TODO: поле блок на вью карт
 
 	def __init__(self, name, hand_cards, many, blind = 0, ante = 0):
 		self.__name       = name
@@ -23,6 +13,12 @@ class PlayerInfo(AbstractPlayerInfo):
 		self.__many       = many
 		self.__blind      = blind
 		self.__ante       = ante
+
+		# crl - change receive list
+		self.__crl_cards = []
+		self.__crl_many  = []
+		self.__crl_blind = []
+		self.__crl_ante  = []
 
 	def name(self):
 		return self.__name
@@ -36,12 +32,32 @@ class PlayerInfo(AbstractPlayerInfo):
 		return self.__ante
 
 	# __name is unchangable
-
 	def set_hand_cards(self, hand_cards):
 		self.__hand_cards = hand_cards
+
+		for cr in self.__crl_cards:
+			cr.hand_cards_changed()
+
 	def set_many(self, many):
 		self.__many = many
+		for cr in self.__crl_cards:
+			cr.many_changed()
+	
 	def set_blind(self, blind):
 		self.__blind = blind
+		for cr in self.__crl_cards:
+			cr.blind_changed()
+
 	def set_ante(self, ante):
-		self.__ante = ante	
+		self.__ante = ante
+		for cr in self.__crl_cards:
+			cr.ante_changed()
+
+	def add_crl_cards(self, crl_member):
+		self.__crl_cards.append(crl_member)
+	def add_crl_many(self, crl_member):
+		self.__crl_many.append(crl_member)
+	def add_crl_blind(self, crl_member):
+		self.__crl_blind.append(crl_member)
+	def add_crl_ante(self, crl_member):
+		self.__crl_ante.append(crl_member)
