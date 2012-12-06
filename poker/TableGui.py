@@ -80,6 +80,7 @@ class TableGui:
 		def hand_cards_changed(self):
 			self.__hand = self.__player_info.hand_cards()
 
+			i = 0
 			for card in self.__hand:
 				if self.__player_info.is_hand_hidden:
 					picture_path = card.image_path()
@@ -87,6 +88,8 @@ class TableGui:
 					picture_path = card.jacket_image_path()
 
 				self.__hand_pixmaps[i].setPixmap(QPixmap(picture_path).scaledToHeight(TableGui.card_height))
+
+				i += 1
 
 
 		def blind_changed(self):
@@ -175,7 +178,7 @@ class TableGui:
 			self.__scene.addItem(self.__bank_text)
 
 		def bank_changed(self):
-			self.__bank_text,setPlainText('Bank: %d' % table_info.bank())
+			self.__bank_text.setPlainText('Bank: %d' % table_info.bank())
 
 	class DecisionBlock:
 		btn_width  = 70
@@ -208,9 +211,6 @@ class TableGui:
 
 	def __init__(self, table_info):
 		self.__table_info = table_info
-
-	def changeTable(self):
-		self.__table_image.setPixmap(QPixmap('table1.png'))
 
 	def start(self):
 		app = QApplication(sys.argv)
