@@ -79,18 +79,58 @@ def bit_complete(mask):
 	return res
 
 def is_straight_flush(list_of_cards, start):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	for suit in suits:
+		target = 0
+		for i in xrange(5):
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+		if mask & target == target:
+			return True
+		else:
+			continue
+	return False
 
 def is_four(list_of_cards, value):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	target = 0
+	for suit in suits:
+		target |= 1 << code_of_card(Card(suit, value))
+	return  mask & target == target
 
 def is_full_house(list_of_cards, three, pair):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	if bit_count(value_masks[three] & mask) >= 3:
+		return False
+	target = 0
+	for suit in suits:
+		target |= 1 << code_of_card(Card(suit, pair))
+	return bit_count(value_masks[pair] & mask) >= 2
 
 def is_flush(list_of_cards, suit):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(mask & suit_masks[suit]) >= 5
+
 def is_straight(list_of_cards, start):
-	raise NotImplementedError
+	mask = get_mask_of_cards(list_of_cards)
+	for i in xrange(5):
+		target = 0
+		for suit in suits:
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+		if target & mask == 0:
+			return False
+	return True
+
+def is_three(list_of_cards, value):
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[value] & mask) >= 3
+
+def is_two_pair(list_of_cards, first_value, second_value):
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[first_value] & mask) >= 2 and bit_count(value_masks[second_value] & mask) >= 2
+
+def is_pair(list_of_cards, value):
+	mask = get_mask_of_cards(list_of_cards)
+	return bit_count(value_masks[value] & mask) >= 2
 
 def cmp_high_card(first_list, second_list, limit):
 	sorted(first_list, key = lambda x: -value_to_int[x.value()])
@@ -101,6 +141,8 @@ def cmp_high_card(first_list, second_list, limit):
 		if first_list[i].value() < second_list[i].value():
 			return 1
 	return 0
+
+
 
 
 def cmp_hand(first_list, second_list):
@@ -126,9 +168,7 @@ def cmp_hand(first_list, second_list):
 				return -1
 			else:
 				return 1
-		if first == 1 and second == 1:
-			mask_of_first = get_mask_of_cards(first_list)
-			mask_of_second = get_mask_of_cards(second_list)
+		if first and second:
 			mask_of_first &= bit_complete(value_masks[value])
 			mask_of_second &= bit_complete(value_masks[value])
 			return cmp_high_card(get_list_cards_from_mask(mask_of_first),
@@ -146,7 +186,7 @@ def cmp_hand(first_list, second_list):
 					return -1
 				else:
 					return 1
-			if first == 1 and second == 1:
+			if first and second:
 				return 0
 	# flush
 	first = 0
@@ -154,32 +194,84 @@ def cmp_hand(first_list, second_list):
 	for suit in suits:
 		if is_flush(first_list, suit):
 			first = 1
-			mask_of_first = get_mask_of_cards(first_list)
 			mask_of_first &= suit_masks[suit]
 			break
 	for suit in suits:
 			second = 1
-			mask_of_second = get_mask_of_cards(second_list)
 			mask_of_second &= suit_masks[suit]
 	if first != second:
 		if first:
 			return  -1
 		else:
 			return 1
-	if first == 1 and second == 1:
+	if first and second:
 		return cmp_high_card(get_list_cards_from_mask(mask_of_first),
-							 get_mask_of_cards(mask_of_second),
+							 get_list_cards_from_mask(mask_of_second),
 							 5)
 	# straight
 	for start in xrange(len(values) - 5, -2, -1):
 		value = int_to_value[start]
-		first  = is_straight(first_list, value)
-		second =
+		first = is_straight(first_list, value)
+		second = is_straight(second_list, value)
+		if first != second:
+			if first:
+				return -1
+			else:
+				return 1
+		if first and second :
+			return 0
 	# three of a kind
+	for value in reversed(values):
+		first = is_three(first_list, value)
+		second = is_three(second_list, value)
+		if first != second:
+			if first:
+				return -1
+			else:
+				return 1
+		if first and second:
+			mask_of_first &= bit_complete(value_masks[value])
+			mask_of_second &= bit_complete(value_masks[value])
+			return cmp_high_card(get_list_cards_from_mask(mask_of_first),
+								 get_list_cards_from_mask(mask_of_second),
+								 2)
 	# two pair
+	for  first_pair in reversed(values):
+		for second_pair in reversed(values):
+			if first_pair.value() < second_pair.value():
+				continue
+			first =  is_two_pair(first_list, first_pair, second_pair)
+			second = is_two_pair(first_list, first_pair, second_pair)
+			if first != second:
+				if first:
+					return -1
+				else:
+					return 1
+			if first and second:
+				mask_of_first &= bit_complete(value_masks[first_pair])
+				mask_of_first &= bit_complete(value_masks[second_pair])
+				mask_of_second &= bit_complete(value_masks[first_pair])
+				mask_of_second &= bit_complete(value_masks[second_pair])
+				return cmp_high_card(get_list_cards_from_mask(mask_of_first),
+									get_list_cards_from_mask(mask_of_second),
+									1)
 	# one pair
+	for value in reversed(values):
+		first = is_pair(first_list, value)
+		second = is_pair(second_list, value)
+		if first != second:
+			if first:
+				return -1
+			else:
+				return 1
+		if first and second:
+			mask_of_first &= bit_complete(value_masks[value])
+			mask_of_second &= bit_complete(value_masks[value])
+			return cmp_high_card(get_list_cards_from_mask(mask_of_first),
+								 get_list_cards_from_mask(mask_of_second),
+								 3)
 	# high card
-	return 0
+	return cmp_high_card(first_list, second_list, 5)
 
 def code_of_card(card):
 	return value_to_int[card.value()] * 4 + suit_to_int[card.suit()]
