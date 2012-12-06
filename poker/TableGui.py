@@ -175,10 +175,34 @@ class TableGui:
 		def bank_changed(self):
 			self.__bank_text,setPlainText('Bank: %d' % table_info.bank())
 
-	# class DecisionBlock:
-		# def __init__(self, scene):
-					
+	class DecisionBlock:
+		btn_width  = 70
+		btn_height = 25
 
+		def __init__(self, scene, type, x, y):
+			# type must be 'Call' or 'Check'
+			self.__scene = scene
+			self.__type  = type
+
+			self.__call_check_btn = QPushButton(type)
+			self.__call_check_btn.setGeometry(x, y, self.btn_width, self.btn_height)
+			self.__scene.addWidget(self.__call_check_btn)
+
+			self.__fold_btn  = QPushButton('Fold')
+			self.__fold_btn.setGeometry(x, y + self.btn_height, self.btn_width, self.btn_height)
+			self.__scene.addWidget(self.__fold_btn)
+
+			self.__raise_btn = QPushButton('Raise:')
+			self.__raise_btn.setGeometry(x + self.btn_width, y, self.btn_width, self.btn_height)
+			self.__scene.addWidget(self.__raise_btn)
+
+			self.__raise_sum_input = QLineEdit()
+			self.__raise_sum_input.setGeometry(x + self.btn_width * 2, y, self.btn_width, self.btn_height)
+			self.__scene.addWidget(self.__raise_sum_input)
+
+			self.__allin_btn = QPushButton('All-in')
+			self.__allin_btn.setGeometry(x + self.btn_width, y + self.btn_height, self.btn_width * 2, self.btn_height)
+			self.__scene.addWidget(self.__allin_btn)
 
 	def __init__(self, table_info):
 		self.__table_info = table_info
@@ -210,10 +234,7 @@ class TableGui:
 
 		opened_card_view = TableGui.OpenedCardView(self.__scene, self.__table_info)
 		bank_view = TableGui.BankView(self.__scene, self.__table_info)
-
-		button = QPushButton('new game')
-		self.__scene.addWidget(button)
-		button.clicked.connect(self.changeTable)
+		TableGui.DecisionBlock(self.__scene, 'Call', 300, 320)
 
 		self.__view.show()
 		return app.exec_()
