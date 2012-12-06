@@ -1,15 +1,37 @@
 # -*- coding: utf-8 -*-
 
-__author__ = "anlun"
+__author__ = 'anlun'
 
 from Card import *
+from PlayerInfo import *
 
-class LogAnalyzer:
+class TableInfo:
 	def __init__(self):
 		# TODO: init current player // PlayerInfo
 		# TODO: init enemy players (self.__enemy_list) // PlayerInfo
 		self.__client_player = []
 		self.__enemy_list = []
+
+		playerInfo = PlayerInfo('Vasya', [Card('h', 'a'), Card('c', '9')], 1000, 1, 200)
+
+		self.__players = []
+		self.__players.append(playerInfo)
+		self.__players.append(PlayerInfo('1', [Card('h', 'a'), Card('c', '9')], 1000, 2, 200, True))
+		self.__players.append(PlayerInfo('2', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('3', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('4', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('5', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('6', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('7', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('8', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+
+		self.__player_order_dict = {}
+
+	def players(self):
+		return self.__players
+
+	def player_count(self):
+		return len (self.__players)
 
 	def client_player(self):
 		return self.__client_player
@@ -30,10 +52,15 @@ class LogAnalyzer:
 	def opened_cards(self):
 		pass
 
+	def player_order(self, player_name):
+		if player_name in self.__player_order_dict:
+			return self.__player_order_dict[player_name]
+		return -1
+
 	def __exec_msg(self):
 		pass
 
-# class LogAnalyzer:
+# class TableInfo:
 # 	def __init__(self, name):
 # 		self.__small_blind = 0
 # 		self.__big_blind = 0

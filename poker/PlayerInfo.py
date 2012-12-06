@@ -2,7 +2,7 @@
 
 from Card import Card
 
-__author__ = "anlun"
+__author__ = 'anlun'
 
 class PlayerInfo():
 	# TODO: поле блок на вью карт
@@ -55,8 +55,8 @@ class PlayerInfo():
 		for cr in self.__crl_cards:
 			cr.ante_changed()
 
-	def is_hand_hidden(self, is_hand_hidden):
-		self.__is_hand_hidden
+	def set_is_hand_hidden(self, is_hand_hidden):
+		self.__is_hand_hidden = is_hand_hidden
 		for cr in self.__crl_cards:
 			cr.hand_cards_changed()	
 
