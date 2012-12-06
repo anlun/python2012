@@ -39,8 +39,9 @@ class Bot(Player):
 		for i in xrange(len(suits) * len(values)):
 			if (total_mask >> i) & 1 == 1:
 				continue
-			result += self.go(hand_mask, enemy_mask, open_mask | (1 << i))
-		result /= but
+			result += self.btc(hand_mask, enemy_mask, open_mask | (1 << i))
+		result /= bit_count(total_mask)
+		return result
 
 	def turn_preflop(self, value):
 #		count_raise = self.count_raise()
