@@ -1,20 +1,19 @@
 __author__ = 'nk-karpov'
 
-from LogAnalyzer import *
+#from TableInfo import *
 
 class Player:
 
-	def __init__(self, name):
-		self.store = LogAnalyzer(name)
-
+	def __init__(self, name, table_info):
+		pass
 	def __check_or_call__(self):
-		pass #TODO protocol
+		return ["check or call", None]
 
 	def __fold__(self):
-		pass #TODO protocol
+		return ["fold", None]
 
 	def __raise__(self, value):
-		pass #TODO protocol
+		return ["raise", value]
 	def __allin__(self):
 		pass #TODO protocol
 	def turn(self):
@@ -23,12 +22,12 @@ class Player:
 	def add_message(self, message):
 		pass #TODO override and protocol all logica with analyzer and gui
 
-	def wait(self):
-		#TODO protocol
-		#wait message
-		#while message is not broadcast:
-		#   add_message(message)
-		#   continue wait
-		#else:
-		#   break wait
-		pass
+#	def wait(self):
+#		TODO protocol
+#		wait message
+#		while message is not broadcast:
+#		   add_message(message)
+#		   continue wait
+#		else:
+#		   break wait
+#		pass
