@@ -15,24 +15,25 @@ class Bot(Player):
 	def __init__(self, name, table_info):
 		Player.__init__(self, name, table_info)
 		self.store = PlayerInfo(name)
-		self.four = dict()
+		self.fours = list()
+		self.suits = list()
 		self.table_info = table_info
 		for i in values:
 			list_card = []
 			for j in suits:
 				list_card.append(Card(j, i))
-			self.four[i] = get_mask_of_cards(list_card)
+			self.fours.append(get_mask_of_cards(list_card))
 
 	def turn_preflop(self):
 		count_raise = 0
 		position = self.table_info.get_position(name)
 		mask = get_mask_of_cards(self.store.hand_cards())
-		aa = bit_count(mask & self.four[12]) == 2
-		kk = bit_count(mask & self.four[11]) == 2
-		qq = bit_count(mask & self.four[10]) == 2
-		ak = bit_count(mask & (self.four[11] | self.four[12])) == 2
-		jj = bit_count(mask & self.four[9]) == 2
-		tt = bit_count(mask & self.four[8]) == 2
+		aa = bit_count(mask & self.fours[12]) == 2
+		kk = bit_count(mask & self.fours[11]) == 2
+		qq = bit_count(mask & self.fours[10]) == 2
+		ak = bit_count(mask & (self.fours[11] | self.fours[12])) == 2
+		jj = bit_count(mask & self.fours[9]) == 2
+		tt = bit_count(mask & self.fours[8]) == 2
 		if aa | kk:
 			if count_raise == 0:
 				return self.__raise__(self.table_info.big_blind * 4)
@@ -65,6 +66,7 @@ class Bot(Player):
 		return self.__fold__()
 
 	def turn_flop(self):
+
 		return self.__check_or_call__()
 	def turn(self):
 		number_cards_on_table = len(self.table_info.opened_cards())
