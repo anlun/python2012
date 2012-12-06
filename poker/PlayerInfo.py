@@ -2,17 +2,18 @@
 
 from Card import Card
 
-__author__ = "anlun"
+__author__ = 'anlun'
 
 class PlayerInfo():
 	# TODO: поле блок на вью карт
 
-	def __init__(self, name, hand_cards, many, blind = 0, ante = 0):
+	def __init__(self, name, hand_cards = [], many = 0, blind = 0, ante = 0, is_hand_hidden = False):
 		self.__name       = name
 		self.__hand_cards = hand_cards
 		self.__many       = many
 		self.__blind      = blind
 		self.__ante       = ante
+		self.__is_hand_hidden = is_hand_hidden
 
 		# crl - change receive list
 		self.__crl_cards = []
@@ -30,11 +31,12 @@ class PlayerInfo():
 		return self.__blind
 	def ante(self):
 		return self.__ante
+	def is_hand_hidden(self):
+		return self.__is_hand_hidden
 
 	# __name is unchangable
 	def set_hand_cards(self, hand_cards):
 		self.__hand_cards = hand_cards
-
 		for cr in self.__crl_cards:
 			cr.hand_cards_changed()
 
@@ -52,6 +54,11 @@ class PlayerInfo():
 		self.__ante = ante
 		for cr in self.__crl_cards:
 			cr.ante_changed()
+
+	def set_is_hand_hidden(self, is_hand_hidden):
+		self.__is_hand_hidden = is_hand_hidden
+		for cr in self.__crl_cards:
+			cr.hand_cards_changed()	
 
 	def add_crl_cards(self, crl_member):
 		self.__crl_cards.append(crl_member)

@@ -14,5 +14,7 @@ class Card:
 		return self.__value
 
 	def image_path(self):
-		result = "images/cards/%s/%s" % (self.__suit, self.__value)
-		return result
+		return "images/cards/%s/%s.jpg" % (self.__suit, self.__value)
+
+	def jacket_image_path(self):
+		return "images/cards/d.jpg"
