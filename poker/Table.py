@@ -31,7 +31,7 @@ class Table:
 		return -1
 
 	def round(self):
-		round_blind = self.__new_round_blind()
+		round_blind = self.__round_blind()
 		self.__table_info.set_opened_cards([])
 
 		if self.__turn_start_player_name == '':
@@ -41,20 +41,26 @@ class Table:
 		self.__deck = random_shuffle(generate_deck())
 		for player in self.__player_queue:
 			player.player_info().set_is_hand_hidden(True)
-			player.player_info().set_hand_cards(self.__deck[0:2])
-			self.__deck = self.__deck[2:]
+			player.player_info().set_hand_cards(self.__deck[0 : 2])
+			self.__deck = self.__deck[2 : ]
 
 		# Set blinds
 		self.__player_queue[0].player_info().set_blind(1)
-		self.__player_queue[0].player_info().set_ante(new_round_blind / 2)
+		self.__player_queue[0].player_info().set_ante(round_blind / 2)
 
 		self.__player_queue[1].player_info().set_blind(2)
-		self.__player_queue[1].player_info().set_ante(new_round_blind)
+		self.__player_queue[1].player_info().set_ante(round_blind)
 
 		# Start turns
 		self.__flop(round_blind)
 		self.__turn()
 		self.__river()
+
+		# Open cards
+		for player in self.__player_queue:
+			if player.player_info().is_folded():
+				continue
+			player.player_info().set_is_hand_hidden(False)
 
 		# Bank for winner
 		# TODO!!!!!!
@@ -66,7 +72,7 @@ class Table:
 		for player in self.__player_queue:
 			player.player_info().set_blind(0)
 
-		# Delete dead players / have no money for blind
+		# Delete dead players / have no many for blind
 		alive_players  = []
 		for player in self.__player_queue:
 			if player.player_info().many() > 0:
@@ -146,7 +152,7 @@ class Table:
 			self.__table_info.set_bank(self.__table_info.bank() + value - ante)
 			return value
 
-	def __new_round_blind(self):
+	def __round_blind(self):
 		return 10
 
 	def __next_alive_player(self, player_num):
