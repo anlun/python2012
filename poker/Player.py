@@ -12,15 +12,15 @@ class Player:
 		return self.__player_info
 
 	def __check_or_call__(self, value):
-		return Turn("check or call", value)
+		return Turn('check or call', value)
 
 	def __fold__(self):
-		return Turn("fold", 0)
+		return Turn('fold', 0)
 
 	def __raise__(self, value):
-		return Turn("raise", value)
+		return Turn('raise', value)
 	def __allin__(self, value):
-		return Turn("allin", value)
+		return Turn('allin', value)
 	def turn(self, value):
 		raise NotImplementedError
 

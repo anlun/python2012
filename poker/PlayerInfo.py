@@ -5,7 +5,8 @@ from Card import Card
 __author__ = 'anlun'
 
 class PlayerInfo():
-	# TODO: поле блок на вью карт
+	# TODO: add is_allined
+	#		and in Table!!!!
 
 	def __init__(self, name, hand_cards = [], many = 0, blind = 0, ante = 0, is_hand_hidden = False):
 		self.__name       = name
@@ -16,6 +17,7 @@ class PlayerInfo():
 		self.__is_hand_hidden = is_hand_hidden
 
 		self.__is_alive = True
+		self.__is_folded = False
 
 		# crl - change receive list
 		self.__crl_cards = []
@@ -40,6 +42,12 @@ class PlayerInfo():
 		return self.__is_alive
 	def set_is_alive(self, is_alive):
 		self.__is_alive = is_alive
+		# TODO: менять GUI
+
+	def is_folded(self):
+		return self.__is_folded
+	def set_is_folded(self, is_folded):
+		self.__is_folded = is_folded
 		# TODO: менять GUI
 
 	# __name is unchangable
