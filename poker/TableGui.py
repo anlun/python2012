@@ -9,6 +9,7 @@ from PyQt4.QtCore import *
 from TableInfo    import *
 from PlayerInfo   import *
 from Table        import *
+from Turn         import *
 
 from time         import sleep
 
@@ -240,7 +241,14 @@ class TableGui:
 			self.__allin_btn.setEnabled(False)
 			self.__scene.addWidget(self.__allin_btn)
 
-		# def __fold_clicked(self):
+			self.__fold_btn.clicked.connect(self.__fold_clicked)
+			self.__call_check_btn.clicked.connect(self.__call_check_clicked)
+
+		def __fold_clicked(self):
+			self.deactivate(Turn('fold', 0))
+
+		def __call_check_clicked(self):
+			self.deactivate(Turn('check or call', self.__min_value))
 
 		def activate(self, value, blind, player, func_to_call):
 			self.__call_check_btn.setEnabled(True)
@@ -254,7 +262,7 @@ class TableGui:
 			self.__player    = player
 			self.__func_to_call = func_to_call
 
-		def deactivate(turn_res, func_to_call):
+		def deactivate(self, turn_res):
 			self.__call_check_btn.setEnabled(False)
 			self.__fold_btn.setEnabled(False)
 			self.__raise_btn.setEnabled(False)
