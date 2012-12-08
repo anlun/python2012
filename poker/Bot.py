@@ -161,6 +161,7 @@ class Bot(Player):
 			return self.__check_or_call__(value)
 
 	def turn_flop(self, value):
+		return self.__check_or_call__(value)
 		total = len(suits) * len(values)
 		mult = 2. / (total - 5) / (total - 6)
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
