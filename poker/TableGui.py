@@ -243,12 +243,22 @@ class TableGui:
 
 			self.__fold_btn.clicked.connect(self.__fold_clicked)
 			self.__call_check_btn.clicked.connect(self.__call_check_clicked)
+			self.__allin_btn.clicked.connect(self.__allin_clicked)
+			self.__raise_btn.clicked.connect(self.__raise_clicked)
 
 		def __fold_clicked(self):
 			self.deactivate(Turn('fold', 0))
 
 		def __call_check_clicked(self):
 			self.deactivate(Turn('check or call', self.__min_value))
+
+		def __allin_clicked(self):
+			self.deactivate(Turn('allin', self.__player.player_info().many()))
+
+		def __raise_clicked(self):
+			sum = int(self.__raise_sum_input.text())
+			if sum >= self.__blind:
+				self.deactivate(Turn('raise', self.__player.player_info().ante() + sum))
 
 		def activate(self, value, blind, player, func_to_call):
 			self.__call_check_btn.setEnabled(True)
