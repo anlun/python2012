@@ -13,13 +13,18 @@ class Player:
 		return self.__player_info
 
 	def __check_or_call__(self, value):
+		if value >= self.__player_info.many():
+			return self.__allin__(self.__player_info.many())
 		return Turn('check or call', value)
 
 	def __fold__(self):
 		return Turn('fold', 0)
 
 	def __raise__(self, value):
+		if value >= self.__player_info.many():
+			return self.__allin__(self.__player_info.many())
 		return Turn('raise', value)
+
 	def __allin__(self, value):
 		return Turn('allin', value)
 	
