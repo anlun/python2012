@@ -127,7 +127,7 @@ class TableGui:
 		def __init_many_view(self):
 			x = self.__pos[0]
 			y = self.__pos[1] + TableGui.name_height
-			self.__many_text = QGraphicsTextItem('Bank: ' + str(self.__player_info.many()))
+			self.__many_text = QGraphicsTextItem('Many: ' + str(self.__player_info.many()))
 			self.__many_text.setPos(x, y + TableGui.card_height)
 			self.__scene.addItem(self.__many_text)
 
