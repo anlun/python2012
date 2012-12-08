@@ -128,7 +128,7 @@ class Table(QObject):
 			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded(), self.__br_visit_list)
 			# TODO: check len of __br_visit_list
 
-			if self.__player_queue[0].player_info().ante() == cur_ante:
+			if self.__br_visit_list[0].player_info().ante() == cur_ante:
 				# go to next type
 				if type == 'flop':
 					self.__open_flop()
