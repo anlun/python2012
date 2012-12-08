@@ -196,11 +196,11 @@ class Bot(Player):
 		if number_cards_on_table == 0:
 			turn_res = self.turn_preflop(value)
 		elif number_cards_on_table == 3:
-			turn_res =self.turn_flop(value)
+			turn_res = self.turn_flop(value)
 		elif number_cards_on_table == 4:
-			turn_res =self.turn_turn(value)
+			turn_res = self.turn_turn(value)
 		elif number_cards_on_table == 5:
-			turn_res =self.turn_river(value)
+			turn_res = self.turn_river(value)
 
 		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
 
