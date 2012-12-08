@@ -104,41 +104,58 @@ class Table(QObject):
 		self.__flop(self.__round_blind())
 
 	def __flop(self, blind):
-		self.__player_ante_dict = {}
-		self.__player_ante_dict[ self.__player_queue[0] ] = blind / 2
-		self.__player_ante_dict[ self.__player_queue[1] ] = blind
-
 		# player for whom make_turn must be done
 		self.__br_visit_list = self.__player_queue[2 : ] + self.__player_queue[0 : 2]
 		self.__bets_and_raises(blind, 'flop')
 
 	def __bets_and_raises(self, cur_ante, type):
 		if self.__br_visit_list == []:
-			raise NotImplementedError()
+			if type == 'flop':
+				self.__br_visit_list = self.__player_queue[2 : ] + self.__player_queue[0 : 2]
+			else:
+				self.__br_visit_list = self.__player_queue
+
+			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded(), self.__br_visit_list)
+
+			if self.__player_queue[0].player_info().ante() == cur_ante:
+				# go to next type
+				if type == 'flop':
+					self.__open_flop()
+					return
+				elif type == 'turn':
+					self.__open_turn()
+					return
+				else:
+					self.__open_river()
+					return
 
 		player = self.__br_visit_list[0]
 		self.__br_visit_list = self.__br_visit_list[1 :]
 
-		# make_turn
-		self.__make_player_turn(player, cur_ante, type)
+		if not player.player_info().is_folded():
+			# make_turn
+			self.__make_player_turn(player, cur_ante, type)
+		else:
+			self.__bets_and_raises(cur_ante, type)
+
+	def __clear_ante(self):
+		for player in self.__player_queue:
+			player.player_info().set_ante(0)
 
 	def __make_player_turn(self, player, cur_ante, type):
-		print 'PLAYER_TURN'
-
 		player.player_info().set_active()
 		turn_res = player.turn(cur_ante)
 
-		QTimer.singleShot(1000, lambda : self.__player_turn_res(player, turn_res, type))
+		QTimer.singleShot(1000, lambda : self.__player_turn_res(player, turn_res, cur_ante, type))
 
-	def __player_turn_res(self, player, turn_res, type):
-		verdict = turn_res.verdict
+	def __player_turn_res(self, player, turn_res, cur_ante, type):
+		verdict = turn_res.verdict()
 
 		if verdict == 'fold':
 			player.player_info().set_is_folded(True)
 
 			player.player_info().set_unactive()
 
-			player_ante_dict[player] = 0
 			QTimer.singleShot(200, lambda : self.__bets_and_raises(cur_ante, type))
 			return
 		else:
@@ -147,39 +164,42 @@ class Table(QObject):
 			ante  = player.player_info().ante()
 
 			player.player_info().set_many(many - value + ante)
-			player.player_info().set_ante(ante)
+			player.player_info().set_ante(value)
 
 			self.__table_info.set_bank(self.__table_info.bank() + value - ante)
-
 			player.player_info().set_unactive()
 
-			self.__player_ante_dict[player] = value
 			QTimer.singleShot(200, lambda : self.__bets_and_raises(value, type))
 			return
-
 
 	def __open_flop(self):
 		self.__table_info.set_opened_cards(self.__deck[0 : 3])
 		self.__deck = self.__deck[3 : ]
 
+		# self.__clear_ante()
+
 		QTimer.singleShot(200, self.__turn)
 	
 	def __turn(self):
-		self.__bets_and_raises({}, 0, 'turn')
+		self.__br_visit_list = self.__player_queue
+		self.__bets_and_raises(0, 'turn')
 
 	def __open_turn(self):
 		self.__table_info.add_opened_card(self.__deck[0]) 
-		self.__deck = self.__deck[0 : ]
+		self.__deck = self.__deck[1 : ]
+		
+		# self.__clear_ante()
 
 		QTimer.singleShot(200, self.__river)
 
 	def __river(self):
-		self.__bets_and_raises({}, 0, 'river')
+		self.__br_visit_list = self.__player_queue
+		self.__bets_and_raises(0, 'river')
 
 	def __open_river(self):
 		self.__table_info.add_opened_card(self.__deck[0]) 
-		self.__deck = self.__deck[0 : ]
-
+		self.__deck = self.__deck[1 : ]
+		
 		QTimer.singleShot(200, self.__clear_round)
 
 	# def __bets_and_raises_flop(self, blind):

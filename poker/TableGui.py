@@ -106,8 +106,11 @@ class TableGui:
 				self.__blind.setPixmap(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.card_width))
 
 		def ante_changed(self):
-			ante = self.__player_info.ante()
-			self.__ante_text.setPlainText('Ante: ' + str(ante))
+			ante_text = 'FOLD'
+			if not self.__player_info.is_folded():
+				ante = self.__player_info.ante()
+				ante_text = str(ante)
+			self.__ante_text.setPlainText('Ante: ' + ante_text)
 
 		def many_changed(self):
 			many = self.__player_info.many()

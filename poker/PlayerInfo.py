@@ -16,7 +16,7 @@ class PlayerInfo():
 		self.__ante       = ante
 		self.__is_hand_hidden = is_hand_hidden
 
-		self.__is_alive = True
+		self.__is_alive  = True
 		self.__is_folded = False
 		self.__is_active = False # is player making decision right now
 
@@ -51,7 +51,8 @@ class PlayerInfo():
 		return self.__is_folded
 	def set_is_folded(self, is_folded):
 		self.__is_folded = is_folded
-		# TODO: менять GUI
+		for cr in self.__crl_ante:
+			cr.ante_changed()
 
 	def is_active(self):
 		return self.__is_active
