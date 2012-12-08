@@ -286,7 +286,7 @@ def bit_count(n):
 	for i in xrange(len(values) * len(suits)):
 		if  n & 1 == 1:
 			result += 1
-			n >>= 1
+		n >>= 1
 	return result
 
 def get_list_cards_from_mask(mask):

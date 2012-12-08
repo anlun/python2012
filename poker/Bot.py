@@ -9,13 +9,13 @@ from PyQt4.QtCore import *
 
 class Bot(Player):
 	__player_info = None
-	table_info = None
+	__table_info = None
 	big_blind = 0
 	small_blind = 0
 	bet = 0
 	def __init__(self, player_info, table_info):
 		self.__player_info = player_info
-		self.table_info = table_info
+		self.__table_info = table_info
 		Player.__init__(self, player_info, table_info)
 		init()
 
@@ -67,21 +67,22 @@ class Bot(Player):
 		print "value =", value, ", ante =", self.__player_info.ante()
 		if aa | kk:
 			if count_raise == 0:
-				return self.__raise__(self.table_info.big_blind * 4 + value)
+				return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			elif count_raise == 1:
-				return self.__raise__(self.table_info.big_blind * 4 + value)
+				return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			else:
 				return self.__allin__(self.__player_info.many())
 		if qq:
+
 			if count_raise == 0:
-				return self.__raise__(self.table_info.big_blind * 4 + value)
+				return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			elif count_raise == 1:
-				return self.__raise__(self.table_info.big_blind * 4 + value)
+				return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			else:
 				return self.__check_or_call__(value)
 		if ak:
 			if count_raise == 0:
-				return self.__raise__(self.table_info.big_blind * 4 + value)
+				return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			elif count_raise ==  1:
 				return self.__check_or_call__(value)
 			else:
@@ -90,19 +91,21 @@ class Bot(Player):
 				else:
 					return self.__check_or_call__(value)
 		if jj | tt:
+			print "jack or ten"
 			if count_raise == 0:
 				if 2 <= position and position <= 5:
 					return self.__check_or_call__(value)
 				else:
-					return self.__raise__(self.table_info.big_blind * 4 + value)
+					return self.__raise__(self.__table_info.big_blind() * 4 + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
 				else:
 					return self.__check_or_call__(value)
 
-		for value in values:
-			if bit_count(mask & value_masks[value]):
+		for _value in values:
+			if bit_count(mask & value_masks[_value]):
+				print "go"
 				if count_raise == 0:
 					self.__check_or_call__(value)
 				else:
@@ -112,10 +115,10 @@ class Bot(Player):
 						return self.__check_or_call__(value)
 		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['q']) == 1:
 			if count_raise == 0:
-				if position <= 5:
+				if False:
 					return self.__fold__()
 				else:
-					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
+					return self.__raise__(4 * self.__table_info.big_blind() * 4 + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -124,13 +127,13 @@ class Bot(Player):
 
 		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['j']):
 			if count_raise == 0:
-				if position <= 5:
+				if False:
 					if self.__player_info.ante() < value:
 						return self.__fold__()
 					else:
 						return self.__check_or_call__(value)
 				else:
-					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
+					return self.__raise__(4 * self.__table_info.big_blind() * 4 + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -139,13 +142,13 @@ class Bot(Player):
 
 		if bit_count(mask & value_masks['k']) == 1 and bit_count(mask & value_masks['q']) == 1:
 			if count_raise == 0:
-				if position <= 5:
+				if False:
 					if self.__player_info.ante() < value:
 						return self.__fold__()
 					else:
 						return self.__check_or_call__(value)
 				else:
-					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
+					return self.__raise__(4 * self.__table_info.big_blind() * 4 + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -198,7 +201,7 @@ class Bot(Player):
 		probability *= mult
 		if probability > 0.75:
 			self.bet = self.table_info.big_blind() * 4 + value
-			return self.__raise__(self.table_info.big_blind() * 4 + value)
+			return self.__raise__(self.__table_info.big_blind() * 4 + value)
 		elif probability > 0.25:
 			return self.__check_or_call__(value)
 		else:
@@ -212,7 +215,7 @@ class Bot(Player):
 		total = len(suits) * len(values)
 		mult = 2. / (total - 7) / (total - 8)
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
-		opened_mask = get_mask_of_cards(self.table_info.opened_cards())
+		opened_mask = get_mask_of_cards(self.__table_info.opened_cards())
 		probability = 0.
 		for i in xrange(52):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
@@ -224,7 +227,7 @@ class Bot(Player):
 				probability += self.btc(hand_mask, enemy_mask, opened_mask)
 		probability *= mult
 		if probability > 0.75:
-			return self.__raise__(self.table_info.big_blind() * 4 + value)
+			return self.__raise__(self.__table_info.big_blind() * 4 + value)
 		elif probability > 0.25:
 			return self.__check_or_call__(value)
 		else:
@@ -234,7 +237,7 @@ class Bot(Player):
 				return self.__check_or_call__(value)
 
 	def turn(self, value, blind, func_to_call):
-		number_cards_on_table = len(self.table_info.opened_cards())
+		number_cards_on_table = len(self.__table_info.opened_cards())
 		print "number = ", number_cards_on_table
 		for card in self.__player_info.hand_cards():
 			card.__print__()
