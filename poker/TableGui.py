@@ -253,12 +253,16 @@ class TableGui:
 			self.deactivate(Turn('check or call', self.__min_value))
 
 		def __allin_clicked(self):
-			self.deactivate(Turn('allin', self.__player.player_info().many()))
+			if self.__player.player_info().many() > 0:
+				self.deactivate(Turn('allin', self.__player.player_info().many() + self.__player.player_info().ante()))
 
 		def __raise_clicked(self):
-			sum = int(self.__raise_sum_input.text())
-			if sum >= self.__blind:
-				self.deactivate(Turn('raise', self.__player.player_info().ante() + sum))
+			try:
+				sum = int(self.__raise_sum_input.text())
+				if sum >= self.__blind and sum <= self.__player.player_info().many():
+					self.deactivate(Turn('raise', self.__player.player_info().ante() + sum))
+			except ValueError:
+				pass
 
 		def activate(self, value, blind, player, func_to_call):
 			self.__call_check_btn.setEnabled(True)
