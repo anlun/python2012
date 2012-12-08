@@ -83,11 +83,12 @@ def bit_complete(mask):
 	return res
 
 def is_straight_flush(list_of_cards, start):
+	start_int = value_to_int[start]
 	mask = get_mask_of_cards(list_of_cards)
 	for suit in suits:
 		target = 0
 		for i in xrange(5):
-			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start_int + len(values) + i) % len(values)]))
 		if mask & target == target:
 			return True
 		else:
@@ -115,11 +116,12 @@ def is_flush(list_of_cards, suit):
 	return bit_count(mask & suit_masks[suit]) >= 5
 
 def is_straight(list_of_cards, start):
+	start_int = value_to_int[start]
 	mask = get_mask_of_cards(list_of_cards)
 	for i in xrange(5):
 		target = 0
 		for suit in suits:
-			target |= 1 << code_of_card(Card(suit, int_to_value[(start + len(values) + i) % len(values)]))
+			target |= 1 << code_of_card(Card(suit, int_to_value[(start_int + len(values) + i) % len(values)]))
 		if target & mask == 0:
 			return False
 	return True
@@ -152,8 +154,9 @@ def cmp_hand(first_list, second_list):
 	mask_of_second = get_mask_of_cards(second_list)
 	# straight flush
 	for start in xrange(len(values) - 5, -2, -1):
-		first  = is_straight_flush(first_list, int_to_value[(12 + start) % 12])
-		second = is_straight_flush(second_list, start)
+		start_value = int_to_value[(len(values) + start) % len(values)]
+		first  = is_straight_flush(first_list, start_value)
+		second = is_straight_flush(second_list, start_value)
 		if first != second:
 			if first:
 				return -1
@@ -212,9 +215,9 @@ def cmp_hand(first_list, second_list):
 							 5)
 	# straight
 	for start in xrange(len(values) - 5, -2, -1):
-		value = int_to_value[start]
-		first = is_straight(first_list, value)
-		second = is_straight(second_list, value)
+		start_value = int_to_value[(len(values) + start) % len(values)]
+		first = is_straight(first_list, start_value)
+		second = is_straight(second_list, start_value)
 		if first != second:
 			if first:
 				return -1
