@@ -128,7 +128,7 @@ class Bot(Player):
 
 		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['j']):
 			if count_raise == 0:
-				if False:
+				if False: #TODO
 					if self.__player_info.ante() < value:
 						return self.__fold__()
 					else:
