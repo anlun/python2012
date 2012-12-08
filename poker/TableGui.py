@@ -207,7 +207,10 @@ class TableGui:
 		btn_width  = 70
 		btn_height = 25
 
-		def __init__(self, scene, type, x, y):
+		def __init__(self):
+			pass
+
+		def start(self, scene, type, x, y):
 			# type must be 'Call' or 'Check'
 			self.__scene = scene
 			self.__type  = type
@@ -237,16 +240,37 @@ class TableGui:
 			self.__allin_btn.setEnabled(False)
 			self.__scene.addWidget(self.__allin_btn)
 
-		def activate(self, value, blind, func_to_call):
+		# def __fold_clicked(self):
+
+		def activate(self, value, blind, player, func_to_call):
 			self.__call_check_btn.setEnabled(True)
 			self.__fold_btn.setEnabled(True)
 			self.__raise_btn.setEnabled(True)
 			self.__raise_sum_input.setEnabled(True)
 			self.__allin_btn.setEnabled(True)
 
+			self.__min_value = value
+			self.__blind     = blind
+			self.__player    = player
+			self.__func_to_call = func_to_call
+
+		def deactivate(turn_res, func_to_call):
+			self.__call_check_btn.setEnabled(False)
+			self.__fold_btn.setEnabled(False)
+			self.__raise_btn.setEnabled(False)
+			self.__raise_sum_input.setEnabled(False)
+			self.__allin_btn.setEnabled(False)
+
+			self.__func_to_call(turn_res)
+
 	def __init__(self, table_info):
+		self.__decision_block = TableGui.DecisionBlock()
+
 		self.__table_info = table_info
-		self.__table      = Table(table_info)
+		self.__table      = Table(table_info, self)
+
+	def decision_block(self):
+		return self.__decision_block
 
 	def start(self):		
 		self.__scene = QGraphicsScene()
@@ -270,7 +294,7 @@ class TableGui:
 
 		opened_card_view = TableGui.OpenedCardView(self.__scene, self.__table_info)
 		bank_view = TableGui.BankView(self.__scene, self.__table_info)
-		TableGui.DecisionBlock(self.__scene, 'Call', 300, 320)
+		self.__decision_block.start(self.__scene, 'Call', 300, 320)
 
 		self.__view.show()
 
