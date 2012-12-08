@@ -6,7 +6,8 @@ class Card:
 	def __init__(self, suit, value):
 		self.__suit = suit
 		self.__value = value
-	
+	def __print__(self):
+		print "(", self.__suit, ",", self.__value, ")"
 	def suit(self):
 		return self.__suit
 

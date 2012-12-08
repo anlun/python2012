@@ -3,6 +3,7 @@ __author__ = 'nk-karpov'
 from Player import *
 from Utils import *
 from PlayerInfo import *
+from PyQt4.QtCore import *
 #from TableInfo import *
 
 
@@ -46,7 +47,8 @@ class Bot(Player):
 	def turn_preflop(self, value):
 #		count_raise = self.count_raise()
 		count_raise = 1
-		position = self.table_info.get_position(self.store.name())
+#		position = self.table_info.get_position(self.store.name())
+		position  = 1
 		mask = get_mask_of_cards(self.store.hand_cards())
 		aa = bit_count(mask & value_masks['a']) == 2
 		kk = bit_count(mask & value_masks['k']) == 2
@@ -89,7 +91,7 @@ class Bot(Player):
 					self.__check_or_call__(value)
 				else:
 					self.__fold__()
-		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['q']):
+		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['q']) == 1:
 			if count_raise == 0:
 				if position <= 5:
 					return self.__fold__()
@@ -107,7 +109,7 @@ class Bot(Player):
 			else:
 				return self.__fold__()
 
-		if bit_count(mask & value_masks['k']) == 1 and bit_count(mask & value_masks['q']):
+		if bit_count(mask & value_masks['k']) == 1 and bit_count(mask & value_masks['q']) == 1:
 			if count_raise == 0:
 				if position <= 5:
 					return self.__fold__()
@@ -115,6 +117,7 @@ class Bot(Player):
 					return self.__raise__(4 * self.table_info.big_blind * 4 + value)
 			else:
 				return self.__fold__()
+		return self.__fold__()
 
 	def turn_flop(self, value):
 		total = len(suits) * len(values)
@@ -193,6 +196,7 @@ class Bot(Player):
 
 	def turn(self, value, blind, func_to_call):
 		number_cards_on_table = len(self.table_info.opened_cards())
+		print "number = ", number_cards_on_table
 		if number_cards_on_table == 0:
 			turn_res = self.turn_preflop(value)
 		elif number_cards_on_table == 3:
@@ -201,7 +205,7 @@ class Bot(Player):
 			turn_res = self.turn_turn(value)
 		elif number_cards_on_table == 5:
 			turn_res = self.turn_river(value)
-
+		turn_res.verdict()
 		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
 
 #	def add_message(self, message):
