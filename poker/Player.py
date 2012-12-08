@@ -23,7 +23,7 @@ class Player:
 		return Turn('allin', value)
 	
 	def turn(self, value):
-		return self.__fold__
+		return self.__fold__()
 		# raise NotImplementedError
 
 #	def wait(self):

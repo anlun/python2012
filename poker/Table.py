@@ -6,7 +6,7 @@ from TableGui import *
 
 import random
 
-class Table:
+class Table(QObject):
 	def __init__(self, table_info):
 		self.__table_info = table_info
 
@@ -19,9 +19,6 @@ class Table:
 		# Prepare player queue
 		tsp_num = self.__player_num_by_name(self.__turn_start_player_name)	
 		self.__player_queue = self.__player_queue[tsp_num : ] + self.__player_queue[ : tsp_num]
-
-		# test
-		#self.round()
 
 	def __player_num_by_name(self, name):
 		i = 0
@@ -56,6 +53,8 @@ class Table:
 		pl_inf_2.set_blind(2)
 		pl_inf_2.set_ante(round_blind)
 		pl_inf_2.set_many(pl_inf_2.many() - round_blind)
+
+		self.__table_info.set_bank(round_blind * 1.5)
 		
 		# Start turns
 		self.__flop(round_blind)
@@ -125,7 +124,7 @@ class Table:
 		self.__bets_and_raises(player_ante_dict, cur_ante)
 
 	def __bets_and_raises(self, player_ante_dict, cur_ante):
-		while true:
+		while True:
 			old_ante = cur_ante
 
 			for player in self.__player_queue:
@@ -146,10 +145,12 @@ class Table:
 		player.player_info().set_active()
 
 		turn_res = player.turn(cur_ante)
-		verdict = turn_res.verdict()
+		print turn_res
+		verdict = turn_res.verdict
 
+		raise NotImplementedError()
 		# little wait
-		sleep(4)
+		# sleep(0.01)
 
 		if verdict == 'fold':
 			player.player_info().set_is_folded(True)

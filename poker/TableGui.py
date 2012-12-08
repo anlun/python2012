@@ -191,12 +191,14 @@ class TableGui:
 			self.__scene = scene
 			self.__table_info = table_info
 
+			self.__table_info.add_crl_bank(self)
+
 			self.__bank_text = QGraphicsTextItem('Bank: %d' % table_info.bank())
 			self.__bank_text.setPos(TableGui.center_x, TableGui.center_y + TableGui.card_height)
 			self.__scene.addItem(self.__bank_text)
 
 		def bank_changed(self):
-			self.__bank_text.setPlainText('Bank: %d' % table_info.bank())
+			self.__bank_text.setPlainText('Bank: %d' % self.__table_info.bank())
 
 	class DecisionBlock:
 		btn_width  = 70
