@@ -58,12 +58,13 @@ class Bot(Player):
 		ak = bit_count(mask & (value_masks['a'] | value_masks['k'])) == 2
 		jj = bit_count(mask & value_masks['j']) == 2
 		tt = bit_count(mask & value_masks['10']) == 2
-		for value in values:
-			print value_masks[value],
+		for _value in values:
+			print value_masks[_value],
 		print
-		for value in values:
-			print value, value_masks[value], mask, value_masks[value] & mask
+		for _value in values:
+			print _value, value_masks[_value], mask, value_masks[_value] & mask
 		print aa, kk, qq, ak, jj, tt
+		print "value =", value, ", ante =", self.__player_info.ante()
 		if aa | kk:
 			if count_raise == 0:
 				return self.__raise__(self.table_info.big_blind * 4 + value)
@@ -199,7 +200,6 @@ class Bot(Player):
 			self.bet = self.table_info.big_blind() * 4 + value
 			return self.__raise__(self.table_info.big_blind() * 4 + value)
 		elif probability > 0.25:
-			self.bet = value
 			return self.__check_or_call__(value)
 		else:
 			if value > self.bet:
@@ -224,10 +224,8 @@ class Bot(Player):
 				probability += self.btc(hand_mask, enemy_mask, opened_mask)
 		probability *= mult
 		if probability > 0.75:
-			self.bet = self.table_info.big_blind() * 4 + value
 			return self.__raise__(self.table_info.big_blind() * 4 + value)
 		elif probability > 0.25:
-			self.bet = value
 			return self.__check_or_call__(value)
 		else:
 			if value > self.__player_info.ante():
@@ -240,7 +238,7 @@ class Bot(Player):
 		print "number = ", number_cards_on_table
 		for card in self.__player_info.hand_cards():
 			card.__print__()
-		print "ante =", self.__player_info.ante, ", value =", value
+		print "ante =", self.__player_info.ante(), ", value =", value
 		if number_cards_on_table == 0:
 			self.bet = 0
 			turn_res = self.turn_preflop(value)
