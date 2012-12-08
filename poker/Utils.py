@@ -299,7 +299,7 @@ def get_list_cards_from_mask(mask):
 def get_mask_of_cards(cards):
 	result = 0
 	for card in cards:
-		result |= 1 << bit_count(card)
+		result |= 1 << code_of_card(card)
 	return result
 
 def random_shuffle(deck):
