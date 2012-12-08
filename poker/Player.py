@@ -39,11 +39,12 @@ class Player:
 #		   break wait
 #		pass
 
-def PeoplePlayer(Player):
+class PeoplePlayer(Player):
 	def __init__(self, player_info, table_info, decision_block):
-		super.__init__(player_info, table_info)
+		Player.__init__(self, player_info, table_info)
 		self.__decision_block = decision_block
 
-	def turn(self, value, blind, func_to_call):
+	def turn(self, value, blind, self, func_to_call):
 		# activate buttons
 		self.__decision_block.activate(value, blind, func_to_call)
+		# self.__decision_block.activate(value, blind, None)

@@ -8,11 +8,19 @@ from TableGui import *
 import random
 
 class Table(QObject):
-	def __init__(self, table_info):
+	def __init__(self, table_info, table_gui):
 		self.__table_info = table_info
+		self.__table_gui  = table_gui
 
 		# self.__players = [Player(player_info, self.__table_info) for player_info in self.__table_info.players()]
-		self.__players = [Bot(player_info, self.__table_info) for player_info in self.__table_info.players()]
+		self.__players = [ (
+			PeoplePlayer(
+				self.__table_info.players()[0]
+				, self.__table_info
+				, self.__table_gui.decision_block()
+				)
+			) ]
+		self.__players += [Bot(player_info, self.__table_info) for player_info in self.__table_info.players()[1:]]
 		self.__player_queue = self.__players
 
 		turn_start_player_num = random.randint(0, self.__table_info.player_count() - 1)
@@ -135,6 +143,7 @@ class Table(QObject):
 		player = self.__br_visit_list[0]
 		self.__br_visit_list = self.__br_visit_list[1 :]
 
+		print player.player_info().name, player.player_info().is_folded()
 		if not player.player_info().is_folded():
 			# make_turn
 			self.__make_player_turn(player, cur_ante, type)
@@ -147,6 +156,8 @@ class Table(QObject):
 
 	def __make_player_turn(self, player, cur_ante, type):
 		player.player_info().set_active()
+		print player.player_info().name()
+
 		player.turn(cur_ante, self.__round_blind(), lambda turn_res : self.__player_turn_res(player, turn_res, cur_ante, type))
 
 	def __player_turn_res(self, player, turn_res, cur_ante, type):
@@ -220,6 +231,3 @@ class Table(QObject):
 			result += 1
 
 		return -1
-
-if __name__ == '__main__':
-	table = Table(TableInfo())
