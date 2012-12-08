@@ -191,17 +191,18 @@ class Bot(Player):
 			else:
 				return self.__check_or_call__(value)
 
-	def turn(self, value):
+	def turn(self, value, blind, func_to_call):
 		number_cards_on_table = len(self.table_info.opened_cards())
 		if number_cards_on_table == 0:
-			return self.turn_preflop(value)
+			turn_res = self.turn_preflop(value)
 		elif number_cards_on_table == 3:
-			return self.turn_flop(value)
+			turn_res =self.turn_flop(value)
 		elif number_cards_on_table == 4:
-			return self.turn_turn(value)
+			turn_res =self.turn_turn(value)
 		elif number_cards_on_table == 5:
-			return self.turn_river(value)
+			turn_res =self.turn_river(value)
 
+		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
 
 #	def add_message(self, message):
 #		self.store.add_message(message)

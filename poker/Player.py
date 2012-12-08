@@ -2,6 +2,7 @@ __author__ = 'nk-karpov'
 
 #from TableInfo import *
 from Turn import *
+from PyQt4.QtCore import *
 
 class Player:
 	def __init__(self, player_info, table_info):
@@ -22,9 +23,11 @@ class Player:
 	def __allin__(self, value):
 		return Turn('allin', value)
 	
-	def turn(self, value):
-		return self.__check_or_call__(10)
-		# raise NotImplementedError
+	def turn(self, value, blind, func_to_call):
+		# turn_res = self.__check_or_call__(10)
+
+		# QTimer.singleShot(1000, lambda : func_to_call(turn_res))
+		raise NotImplementedError()
 
 #	def wait(self):
 #		TODO protocol
@@ -35,3 +38,12 @@ class Player:
 #		else:
 #		   break wait
 #		pass
+
+def PeoplePlayer(Player):
+	def __init__(self, player_info, table_info, decision_block):
+		super.__init__(player_info, table_info)
+		self.__decision_block = decision_block
+
+	def turn(self, value, blind, func_to_call):
+		# activate buttons
+		self.__decision_block.activate(value, blind, func_to_call)

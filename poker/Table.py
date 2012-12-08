@@ -1,6 +1,7 @@
 from Utils import *
 from TableInfo import *
 from Player import *
+from Bot import *
 from time import sleep
 from TableGui import *
 
@@ -10,7 +11,8 @@ class Table(QObject):
 	def __init__(self, table_info):
 		self.__table_info = table_info
 
-		self.__players = [Player(player_info, self.__table_info) for player_info in self.__table_info.players()]
+		# self.__players = [Player(player_info, self.__table_info) for player_info in self.__table_info.players()]
+		self.__players = [Bot(player_info, self.__table_info) for player_info in self.__table_info.players()]
 		self.__player_queue = self.__players
 
 		turn_start_player_num = random.randint(0, self.__table_info.player_count() - 1)
@@ -116,6 +118,7 @@ class Table(QObject):
 				self.__br_visit_list = self.__player_queue
 
 			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded(), self.__br_visit_list)
+			# TODO: check len of __br_visit_list
 
 			if self.__player_queue[0].player_info().ante() == cur_ante:
 				# go to next type
@@ -144,9 +147,7 @@ class Table(QObject):
 
 	def __make_player_turn(self, player, cur_ante, type):
 		player.player_info().set_active()
-		turn_res = player.turn(cur_ante)
-
-		QTimer.singleShot(1000, lambda : self.__player_turn_res(player, turn_res, cur_ante, type))
+		player.turn(cur_ante, self.__round_blind(), lambda turn_res : self.__player_turn_res(player, turn_res, cur_ante, type))
 
 	def __player_turn_res(self, player, turn_res, cur_ante, type):
 		verdict = turn_res.verdict()
@@ -201,37 +202,6 @@ class Table(QObject):
 		self.__deck = self.__deck[1 : ]
 		
 		QTimer.singleShot(200, self.__clear_round)
-
-	# def __bets_and_raises_flop(self, blind):
-	# 	cur_ante = blind
-	# 	player_ante_dict = {}
-	# 	player_ante_dict[ self.__player_queue[0] ] = blind / 2
-	# 	player_ante_dict[ self.__player_queue[1] ] = blind
-
-	# 	for player in self.__player_queue[2 : ]:
-	# 		# if player.player_info().is_folded():
-	# 		# 	continue
-	# 		cur_ante = self.__make_player_turn(player, cur_ante)
-	# 		player_ante_dict[player] = cur_ante
-
-	# 	QTimer.singleShot(200, self.__open_flop)
-
-	# def __bets_and_raises(self, player_ante_dict, cur_ante, type):
-	# 	# type is 'river' or 'turn'
-	# 	while True:
-	# 		old_ante = cur_ante
-
-	# 		for player in self.__player_queue:
-	# 			if player.player_info().is_folded():
-	# 				continue
-	# 			if player in player_ante_dict and cur_ante == player_ante_dict[player]:
-	# 				return cur_ante
-				
-	# 			cur_ante = self.__make_player_turn(player, cur_ante)
-	# 			player_ante_dict[player] = cur_ante
-
-	# 		if old_ante == cur_ante:
-	# 			return cur_ante
 
 	def __round_blind(self):
 		return 10
