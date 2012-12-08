@@ -1,6 +1,7 @@
 from Utils import *
 from TableInfo import *
 from Player import *
+from time import sleep
 
 import random
 
@@ -72,7 +73,7 @@ class Table:
 		for player in self.__player_queue:
 			player.player_info().set_blind(0)
 
-		# Delete dead players / have no many for blind
+		# Delete dead players
 		alive_players  = []
 		for player in self.__player_queue:
 			if player.player_info().many() > 0:
@@ -111,8 +112,8 @@ class Table:
 		player_ante_dict[ self.__player_queue[1] ] = blind
 
 		for player in self.__player_queue[2 : ]:
-			if player.player_info().is_folded():
-				continue
+			# if player.player_info().is_folded():
+			# 	continue
 			cur_ante = self.__make_player_turn(player, cur_ante)
 			player_ante_dict[player] = cur_ante
 
@@ -135,11 +136,18 @@ class Table:
 				return cur_ante
 
 	def __make_player_turn(self, player, cur_ante):
+		player.player_info().set_active()
+
 		turn_res = player.turn(cur_ante)
 		verdict = turn_res.verdict()
 
+		# little wait
+		sleep(1)
+
 		if verdict == 'fold':
 			player.player_info().set_is_folded(True)
+
+			player.player_info().set_unactive()
 			return cur_ante
 		else:
 			value = turn_res.value()
@@ -150,6 +158,8 @@ class Table:
 			player.player_info().set_ante(ante)
 
 			self.__table_info.set_bank(self.__table_info.bank() + value - ante)
+
+			player.player_info().set_unactive()
 			return value
 
 	def __round_blind(self):

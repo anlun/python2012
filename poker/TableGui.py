@@ -33,6 +33,7 @@ class TableGui:
 			self.__player_info.add_crl_many(self)
 			self.__player_info.add_crl_blind(self)
 			self.__player_info.add_crl_ante(self)
+			self.__player_info.add_crl_active_alive(self)
 
 			self.__init_player_background()
 			self.__init_player_name_view()
@@ -47,7 +48,7 @@ class TableGui:
 			# self.__player_background = QGraphicsRectItem(x - 20, y - 20, TableGui.card_width * 3 + 40, TableGui.card_height + 70)
 			self.__player_background = QGraphicsRectItem(x, y, TableGui.info_width, TableGui.info_height)
 
-			self.__player_background.setBrush(Qt.green)
+			self.__player_background.setBrush(Qt.yellow)
 			self.__scene.addItem(self.__player_background)
 
 		def __init_player_name_view(self):
@@ -109,6 +110,17 @@ class TableGui:
 			many = self.__player_info.many()
 			self.__many_text.setPlainText('Bank: ' + str(many))
 
+		def active_alive_changed(self):
+			if not self.__player_info.is_alive():
+				self.__player_background.setBrush(Qt.red)
+				return
+			if self.__player_info.is_active():
+				self.__player_background.setBrush(Qt.green)
+				return
+			
+			self.__player_background.setBrush(Qt.yellow)
+			return
+
 		def __init_bank_size_view(self):
 			x = self.__pos[0]
 			y = self.__pos[1] + TableGui.name_height
@@ -133,6 +145,9 @@ class TableGui:
 				self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.blind_size))
 			self.__blind.setPos(x + 2 * TableGui.card_width, y + TableGui.card_height * 1.2)
 			self.__scene.addItem(self.__blind)		
+
+		def test(self):
+			self.__player_background.setBrush(Qt.red)
 
 	class OpenedCardView:
 		def __init__(self, scene, table_info):
@@ -225,7 +240,7 @@ class TableGui:
 		radius_y = 250
 		cur_angle = math.pi / 2
 		for player in self.__table_info.players():
-			playerInfoView = TableGui.PlayerInfoView(
+			player_info_view = TableGui.PlayerInfoView(
 				player
 				, self.__scene
 				, TableGui.center_x + radius_x * math.cos(cur_angle)
