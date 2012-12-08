@@ -47,12 +47,16 @@ class Table:
 			self.__deck = self.__deck[2 : ]
 
 		# Set blinds
-		self.__player_queue[0].player_info().set_blind(1)
-		self.__player_queue[0].player_info().set_ante(round_blind / 2)
+		pl_inf_1  = self.__player_queue[0].player_info()
+		pl_inf_1.set_blind(1)
+		pl_inf_1.set_ante(round_blind / 2)
+		pl_inf_1.set_many(pl_inf_1.many() - round_blind / 2)
 
-		self.__player_queue[1].player_info().set_blind(2)
-		self.__player_queue[1].player_info().set_ante(round_blind)
-
+		pl_inf_2  = self.__player_queue[1].player_info()
+		pl_inf_2.set_blind(2)
+		pl_inf_2.set_ante(round_blind)
+		pl_inf_2.set_many(pl_inf_2.many() - round_blind)
+		
 		# Start turns
 		self.__flop(round_blind)
 		self.__turn()

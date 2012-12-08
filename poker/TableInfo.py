@@ -14,18 +14,18 @@ class TableInfo:
 		self.__client_player = []
 		self.__enemy_list = []
 
-		playerInfo = PlayerInfo('Vasya', [Card('h', 'a'), Card('c', '9')], 1000, 1, 200)
+		playerInfo = PlayerInfo('Vasya', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0)
 
 		self.__players = []
 		self.__players.append(playerInfo)
-		self.__players.append(PlayerInfo('1', [Card('h', 'a'), Card('c', '9')], 1000, 2, 200, True))
-		self.__players.append(PlayerInfo('2', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('3', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('4', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('5', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('6', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('7', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
-		self.__players.append(PlayerInfo('8', [Card('h', 'a'), Card('c', '9')], 1000, 0, 200, True))
+		self.__players.append(PlayerInfo('1', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('2', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('3', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('4', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('5', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('6', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('7', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
+		self.__players.append(PlayerInfo('8', [Card('h', 'a'), Card('c', '9')], 1000, 0, 0, True))
 
 		self.__player_order_dict = {}
 

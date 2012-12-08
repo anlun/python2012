@@ -41,7 +41,7 @@ class TableGui:
 			self.__init_player_background()
 			self.__init_player_name_view()
 			self.__init_hand_card_view()
-			self.__init_bank_size_view()
+			self.__init_many_view()
 			self.__init_ante_view()
 			self.__init_blind_view()
 
@@ -111,7 +111,7 @@ class TableGui:
 
 		def many_changed(self):
 			many = self.__player_info.many()
-			self.__many_text.setPlainText('Bank: ' + str(many))
+			self.__many_text.setPlainText('Many: ' + str(many))
 
 		def active_alive_changed(self):
 			if not self.__player_info.is_alive():
@@ -124,12 +124,12 @@ class TableGui:
 			self.__player_background.setBrush(Qt.yellow)
 			return
 
-		def __init_bank_size_view(self):
+		def __init_many_view(self):
 			x = self.__pos[0]
 			y = self.__pos[1] + TableGui.name_height
-			self.__bank_text = QGraphicsTextItem('Bank: ' + str(self.__player_info.many()))
-			self.__bank_text.setPos(x, y + TableGui.card_height)
-			self.__scene.addItem(self.__bank_text)
+			self.__many_text = QGraphicsTextItem('Bank: ' + str(self.__player_info.many()))
+			self.__many_text.setPos(x, y + TableGui.card_height)
+			self.__scene.addItem(self.__many_text)
 
 		def __init_ante_view(self):
 			x = self.__pos[0]
@@ -146,11 +146,8 @@ class TableGui:
 				self.__blind = QGraphicsPixmapItem(QPixmap('images/littleblind.jpg').scaledToWidth(TableGui.blind_size))
 			elif self.__player_info.blind() == 2:
 				self.__blind = QGraphicsPixmapItem(QPixmap('images/bigblind.jpg').scaledToWidth(TableGui.blind_size))
-			self.__blind.setPos(x + 2 * TableGui.card_width, y + TableGui.card_height * 1.2)
+			self.__blind.setPos(x + 1.8 * TableGui.card_width, y + TableGui.card_height * 1.1)
 			self.__scene.addItem(self.__blind)		
-
-		def test(self):
-			self.__player_background.setBrush(Qt.red)
 
 	class OpenedCardView:
 		def __init__(self, scene, table_info):
@@ -180,6 +177,10 @@ class TableGui:
 			self.opened_cards_changed()
 
 		def opened_cards_changed(self):
+			# clear
+			for card_view in self.__card_view:
+				card_view.setPixmap(QPixmap())
+
 			i = 0
 			for card in self.__table_info.opened_cards():
 				self.__card_view[i].setPixmap(QPixmap(card.image_path()).scaledToHeight(TableGui.card_height * TableGui.table_card_coef))
