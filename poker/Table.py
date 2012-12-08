@@ -95,12 +95,19 @@ class Table(QObject):
 
 		# End check
 		if len(self.__player_queue) < 2:
-			raise NotImplementedError()
+			msg_box = QMessageBox()
+			msg_box.setText('Game over')
+			msg_box.exec_()
+
+			QApplication.quit()
 
 		# Determine next tsp
 		if self.__player_queue[0].player_info().name() == self.__turn_start_player_name:
 			self.__player_queue = self.__player_queue[1 : ] + [ self.__player_queue[0] ]
 		self.__turn_start_player_name = self.__player_queue[0].player_info().name()
+
+		# start new round
+		self.round()
 
 	# round
 	# 	init
