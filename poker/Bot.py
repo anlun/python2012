@@ -59,13 +59,13 @@ class Bot(Player):
 		ak = bit_count(mask & (value_masks['a'] | value_masks['k'])) == 2
 		jj = bit_count(mask & value_masks['j']) == 2
 		tt = bit_count(mask & value_masks['10']) == 2
-		for _value in values:
-			print value_masks[_value],
-		print
-		for _value in values:
-			print _value, value_masks[_value], mask, value_masks[_value] & mask
-		print aa, kk, qq, ak, jj, tt
-		print "value =", value, ", ante =", self.__player_info.ante()
+#		for _value in values:
+#			print value_masks[_value],
+#		print
+#		for _value in values:
+#			print _value, value_masks[_value], mask, value_masks[_value] & mask
+#		print aa, kk, qq, ak, jj, tt
+#		print "value =", value, ", ante =", self.__player_info.ante()
 		if aa | kk:
 			if count_raise == 0:
 				return self.__raise__(self.blind * 4 + value)
@@ -187,6 +187,7 @@ class Bot(Player):
 				return self.__check_or_call__(value)
 
 	def turn_turn(self, value):
+		return self.__check_or_call__(value)
 		total = len(suits) * len(values)
 		mult = 2. / (total - 6) / (total - 7)
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
@@ -213,6 +214,7 @@ class Bot(Player):
 				return self.__check_or_call__(value)
 
 	def turn_river(self, value):
+		return self.__check_or_call__(value)
 		total = len(suits) * len(values)
 		mult = 2. / (total - 7) / (total - 8)
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
@@ -240,18 +242,17 @@ class Bot(Player):
 	def turn(self, value, blind, func_to_call):
 		self.blind = blind
 		number_cards_on_table = len(self.__table_info.opened_cards())
-		print "number = ", number_cards_on_table
-		for card in self.__player_info.hand_cards():
-			card.__print__()
-		print "ante =", self.__player_info.ante(), ", value =", value
 		if number_cards_on_table == 0:
-			self.bet = 0
+			print "preflop"
 			turn_res = self.turn_preflop(value)
 		elif number_cards_on_table == 3:
+			print "flop"
 			turn_res = self.turn_flop(value)
 		elif number_cards_on_table == 4:
+			print "turn"
 			turn_res = self.turn_turn(value)
 		elif number_cards_on_table == 5:
+			print "river"
 			turn_res = self.turn_river(value)
 		turn_res.verdict()
 		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
