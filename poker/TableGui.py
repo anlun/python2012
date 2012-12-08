@@ -214,23 +214,35 @@ class TableGui:
 
 			self.__call_check_btn = QPushButton(type)
 			self.__call_check_btn.setGeometry(x, y, self.btn_width, self.btn_height)
+			self.__call_check_btn.setEnabled(False)
 			self.__scene.addWidget(self.__call_check_btn)
 
 			self.__fold_btn  = QPushButton('Fold')
 			self.__fold_btn.setGeometry(x, y + self.btn_height, self.btn_width, self.btn_height)
+			self.__fold_btn.setEnabled(False)
 			self.__scene.addWidget(self.__fold_btn)
 
 			self.__raise_btn = QPushButton('Raise:')
 			self.__raise_btn.setGeometry(x + self.btn_width, y, self.btn_width, self.btn_height)
+			self.__raise_btn.setEnabled(False)
 			self.__scene.addWidget(self.__raise_btn)
 
 			self.__raise_sum_input = QLineEdit()
 			self.__raise_sum_input.setGeometry(x + self.btn_width * 2, y, self.btn_width, self.btn_height)
+			self.__raise_sum_input.setEnabled(False)
 			self.__scene.addWidget(self.__raise_sum_input)
 
 			self.__allin_btn = QPushButton('All-in')
 			self.__allin_btn.setGeometry(x + self.btn_width, y + self.btn_height, self.btn_width * 2, self.btn_height)
+			self.__allin_btn.setEnabled(False)
 			self.__scene.addWidget(self.__allin_btn)
+
+		def activate(self, value, blind, func_to_call):
+			self.__call_check_btn.setEnabled(True)
+			self.__fold_btn.setEnabled(True)
+			self.__raise_btn.setEnabled(True)
+			self.__raise_sum_input.setEnabled(True)
+			self.__allin_btn.setEnabled(True)
 
 	def __init__(self, table_info):
 		self.__table_info = table_info
