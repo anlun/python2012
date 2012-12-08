@@ -2,12 +2,13 @@ from Utils import *
 from TableInfo import *
 from Player import *
 from time import sleep
+from TableGui import *
 
 import random
 
 class Table:
-	def __init__(self):
-		self.__table_info = TableInfo()
+	def __init__(self, table_info):
+		self.__table_info = table_info
 
 		self.__players = [Player(player_info, self.__table_info) for player_info in self.__table_info.players()]
 		self.__player_queue = self.__players
@@ -20,7 +21,7 @@ class Table:
 		self.__player_queue = self.__player_queue[tsp_num : ] + self.__player_queue[ : tsp_num]
 
 		# test
-		self.round()
+		#self.round()
 
 	def __player_num_by_name(self, name):
 		i = 0
@@ -136,13 +137,15 @@ class Table:
 				return cur_ante
 
 	def __make_player_turn(self, player, cur_ante):
+		print 'PLAYER_TURN'
+
 		player.player_info().set_active()
 
 		turn_res = player.turn(cur_ante)
 		verdict = turn_res.verdict()
 
 		# little wait
-		sleep(1)
+		sleep(4)
 
 		if verdict == 'fold':
 			player.player_info().set_is_folded(True)
@@ -181,4 +184,4 @@ class Table:
 		return -1
 
 if __name__ == '__main__':
-	table = Table()
+	table = Table(TableInfo())

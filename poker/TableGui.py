@@ -4,10 +4,13 @@ __author__ = 'anlun'
 
 import sys
 import math
-from PyQt4.QtGui import *
+from PyQt4.QtGui  import *
 from PyQt4.QtCore import *
-from TableInfo import *
-from PlayerInfo import *
+from TableInfo    import *
+from PlayerInfo   import *
+from Table        import *
+
+from time         import sleep
 
 class TableGui:
 	card_height = 70
@@ -225,10 +228,9 @@ class TableGui:
 
 	def __init__(self, table_info):
 		self.__table_info = table_info
+		self.__table      = Table(table_info)
 
-	def start(self):
-		app = QApplication(sys.argv)
-		
+	def start(self):		
 		self.__scene = QGraphicsScene()
 		self.__view  = QGraphicsView(self.__scene)
 		
@@ -253,7 +255,9 @@ class TableGui:
 		TableGui.DecisionBlock(self.__scene, 'Call', 300, 320)
 
 		self.__view.show()
-		return app.exec_()
+
+	def __call__(self):
+		self.__table.round()
 
 if __name__ == '__main__':
 	table_info = TableInfo()

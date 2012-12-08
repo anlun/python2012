@@ -21,8 +21,10 @@ class Player:
 		return Turn('raise', value)
 	def __allin__(self, value):
 		return Turn('allin', value)
+	
 	def turn(self, value):
-		raise NotImplementedError
+		return self.__fold__
+		# raise NotImplementedError
 
 #	def wait(self):
 #		TODO protocol
