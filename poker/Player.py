@@ -13,6 +13,7 @@ class Player:
 		return self.__player_info
 
 	def __check_or_call__(self, value):
+		assert value >= 0
 		if value >= self.__player_info.many():
 			return self.__allin__(self.__player_info.many())
 		return Turn('check or call', value)
@@ -21,28 +22,16 @@ class Player:
 		return Turn('fold', 0)
 
 	def __raise__(self, value):
+		assert value >= 0
 		if value >= self.__player_info.many():
 			return self.__allin__(self.__player_info.many())
 		return Turn('raise', value)
 
 	def __allin__(self, value):
-		return Turn('allin', value)
+		return Turn('allin', self.__player_info.many())
 	
 	def turn(self, value, blind, func_to_call):
-		# turn_res = self.__check_or_call__(10)
-
-		# QTimer.singleShot(1000, lambda : func_to_call(turn_res))
 		raise NotImplementedError()
-
-#	def wait(self):
-#		TODO protocol
-#		wait message
-#		while message is not broadcast:
-#		   add_message(message)
-#		   continue wait
-#		else:
-#		   break wait
-#		pass
 
 class PeoplePlayer(Player):
 	def __init__(self, player_info, table_info, decision_block):
@@ -51,5 +40,6 @@ class PeoplePlayer(Player):
 
 	def turn(self, value, blind, func_to_call):
 		# activate buttons
+		print "gamer!!!"
 		self.__decision_block.activate(value, blind, self, func_to_call)
 		# self.__decision_block.activate(value, blind, None)
