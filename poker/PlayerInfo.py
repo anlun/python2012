@@ -75,7 +75,9 @@ class PlayerInfo():
 		self.__many = many
 		for cr in self.__crl_cards:
 			cr.many_changed()
-	
+	def change_many(self, bonus):
+		self.__many += bonus
+
 	def set_blind(self, blind):
 		self.__blind = blind
 		for cr in self.__crl_cards:

@@ -20,8 +20,8 @@ class Bot(Player):
 		Player.__init__(self, player_info, table_info)
 		init()
 
-	def player_info(self):
-		return self.__player_info
+#	def player_info(self):
+#		return self.__player_info
 #	def count_raise(self):
 #		log_turn = table_info.turns()
 #		result = 0
