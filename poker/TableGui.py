@@ -252,20 +252,30 @@ class TableGui:
 		def __call_check_clicked(self):
 			if (self.__player.player_info().many() + self.__player.player_info().ante() >= self.__min_value) and (
 					self.__min_value >= self.__player.player_info().ante()):
-				# and (self.__min_value >= self.__player.player_info().ante())
 				self.deactivate(Turn('check or call', self.__min_value))
 
 		def __allin_clicked(self):
 			if self.__player.player_info().many() > 0:
 				self.deactivate(Turn('allin', self.__player.player_info().many() + self.__player.player_info().ante()))
+			else:
+				msg_box = QMessageBox()
+				msg_box.setText('You have no many!')
+				msg_box.exec_()				
 
 		def __raise_clicked(self):
 			try:
 				sum = int(self.__raise_sum_input.text())
 				if sum >= self.__blind and sum <= self.__player.player_info().many():
 					self.deactivate(Turn('raise', self.__player.player_info().ante() + sum))
+				else:
+					msg_box = QMessageBox()
+					msg_box.setText('You have no many enough to this raise!')
+					msg_box.exec_()				
+
 			except ValueError:
-				pass
+				msg_box = QMessageBox()
+				msg_box.setText('Not number in the input field!')
+				msg_box.exec_()
 
 		def activate(self, value, blind, player, func_to_call):
 			self.__call_check_btn.setEnabled(True)
