@@ -188,6 +188,9 @@ class Table(QObject):
 			self.__table_info.set_bank(self.__table_info.bank() + value - ante)
 			player.player_info().set_unactive()
 
+			if verdict == 'allin':
+				value = max(value, cur_ante)
+				
 			QTimer.singleShot(200, lambda : self.__bets_and_raises(value, type))
 			return
 
