@@ -28,7 +28,7 @@ class Player:
 		return Turn('raise', value)
 
 	def __allin__(self, value):
-		return Turn('allin', self.__player_info.many())
+		return Turn('allin', self.__player_info.many() + self.__player_info.ante())
 	
 	def turn(self, value, blind, func_to_call):
 		raise NotImplementedError()
