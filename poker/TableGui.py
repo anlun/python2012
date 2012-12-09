@@ -250,7 +250,9 @@ class TableGui:
 			self.deactivate(Turn('fold', 0))
 
 		def __call_check_clicked(self):
-			if self.__player.player_info().many() + self.__player.player_info().ante() >= self.__min_value:
+			if (self.__player.player_info().many() + self.__player.player_info().ante() >= self.__min_value) and (
+					self.__min_value >= self.__player.player_info().ante()):
+				# and (self.__min_value >= self.__player.player_info().ante())
 				self.deactivate(Turn('check or call', self.__min_value))
 
 		def __allin_clicked(self):
