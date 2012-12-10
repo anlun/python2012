@@ -158,7 +158,7 @@ class Table(QObject):
 			player.player_info().set_is_make_turn(player.player_info().is_allin())
 
 	def __bets_and_raises(self, cur_ante, type):
-		print 'bets!!!'
+		print 'bets!!!', cur_ante
 		if self.__br_visit_list == []:
 			print 'CCC'
 			if type == 'flop':
@@ -230,11 +230,21 @@ class Table(QObject):
 			self.__bets_and_raises(cur_ante, type)
 			return
 		else:
+			self.__unmake_turn()
 			player.player_info().set_is_make_turn(True)
 			value = turn_res.value()
 			many  = player.player_info().many()
 			ante  = player.player_info().ante()
-
+			print player.player_info().name(), verdict
+			if verdict == 'allin':
+				value = max(value, cur_ante)
+			else:
+				if value < cur_ante:
+					player.player_info().set_is_folded(True)
+					player.player_info().set_unactive()
+					self.__bets_and_raises(cur_ante, type)
+					return
+			value = min(value, many + ante)
 			player.player_info().set_many(many - value + ante)
 			player.player_info().set_ante(value)
 
@@ -243,7 +253,8 @@ class Table(QObject):
 
 			if verdict == 'allin':
 				value = max(value, cur_ante)
-				
+			else:
+				assert value >= cur_ante
 #			QTimer.singleShot(200, lambda : self.__bets_and_raises(value, type))
 			self.__bets_and_raises(value, type)
 			return

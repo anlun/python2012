@@ -22,7 +22,8 @@ class Player:
 		return Turn('fold', 0)
 
 	def __raise__(self, value):
-		assert value >= self.player_info().ante()
+		if value <= self.__player_info.ante():
+			return self.__check_or_call__(self.__player_info.ante())
 		if value >= self.__player_info.many():
 			return self.__allin__()
 		return Turn('raise', value)

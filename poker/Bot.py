@@ -53,7 +53,7 @@ class Bot(Player):
 
 	def turn_preflop(self, value):
 #		count_raise = self.count_raise()
-		count_raise = 0
+		count_raise = value > 100
 #		position = self.table_info.get_position(self.store.name())
 		position  = 1
 		mask = get_mask_of_cards(self.__player_info.hand_cards())
@@ -126,7 +126,7 @@ class Bot(Player):
 					else:
 						return self.__check_or_call__(value)
 				else:
-					return self.__raise__(4 * self.blind * 4 + value)
+					return self.__raise__(4 * self.blind  + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -141,7 +141,7 @@ class Bot(Player):
 					else:
 						return self.__check_or_call__(value)
 				else:
-					return self.__raise__(4 * self.blind * 4 + value)
+					return self.__raise__(4 * self.blind  + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -156,7 +156,7 @@ class Bot(Player):
 					else:
 						return self.__check_or_call__(value)
 				else:
-					return self.__raise__(4 * self.blind * 4 + value)
+					return self.__raise__(4 * self.blind  + value)
 			else:
 				if self.__player_info.ante() < value:
 					return self.__fold__()
@@ -259,6 +259,7 @@ class Bot(Player):
 		elif number_cards_on_table == 4:
 			print "TURN"
 			turn_res = self.turn_turn(value)
+			print "END TURN"
 		elif number_cards_on_table == 5:
 			print "RIVER"
 			turn_res = self.turn_river(value)
