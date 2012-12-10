@@ -172,11 +172,14 @@ class Table(QObject):
 				self.__clear_round()
 				return
 			# TODO: check len of __br_visit_list
-			next_round = False
+			# next_round = False
+			# for player in self.__br_visit_list:
+				# next_round = next_round or player.player_info().is_make_turn()
+
+			next_round = True
 			for player in self.__br_visit_list:
-				next_round = next_round or player.player_info().is_make_turn()
+				next_round = next_round and (player.player_info().ante() == cur_ante)
 			if next_round:
-				print 'DDDDD', type
 				# go to next type
 				if type == 'flop':
 					self.__open_flop()
@@ -191,19 +194,18 @@ class Table(QObject):
 		player = self.__br_visit_list[0]
 		self.__br_visit_list = self.__br_visit_list[1 :]
 
-		print 'AAA', player.player_info().name(), \
-					player.player_info().is_folded(), \
-					player.player_info().is_make_turn()
-		if not player.player_info().is_folded() and not player.player_info().is_make_turn():
+		if not player.player_info().is_folded(): #and not player.player_info().is_make_turn():
 			# make_turn
 			if player.player_info().many() == 0:
 				player.player_info().set_is_allin(True)
 			if player.player_info().is_allin():
 				player.player_info().set_is_make_turn(True)
-			if not player.player_info().is_make_turn():
-				print "GO", player.player_info().name(), "!!!"
-				self.__make_player_turn(player, cur_ante, type)
-				player.player_info().set_is_make_turn(True)
+
+			# if not player.player_info().is_make_turn():
+			print "GO", player.player_info().name(), "!!!"
+			self.__make_player_turn(player, cur_ante, type)
+			player.player_info().set_is_make_turn(True)
+
 			else:
 				self.__bets_and_raises(cur_ante, type)
 		else:
