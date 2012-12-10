@@ -117,7 +117,10 @@ class Bot(Player):
 		if bit_count(mask & value_masks['a']) == 1 and bit_count(mask & value_masks['q']) == 1:
 			if count_raise == 0:
 				if False:
-					return self.__fold__()
+					if self.__player_info.ante() < value:
+						return self.__fold__()
+					else:
+						return self.__check_or_call__(value)
 				else:
 					return self.__raise__(4 * self.blind * 4 + value)
 			else:
@@ -243,19 +246,20 @@ class Bot(Player):
 		self.blind = blind
 		number_cards_on_table = len(self.__table_info.opened_cards())
 		if number_cards_on_table == 0:
-			print "preflop"
+			print "PREFLOP"
 			turn_res = self.turn_preflop(value)
 		elif number_cards_on_table == 3:
-			print "flop"
+			print "FLOP"
 			turn_res = self.turn_flop(value)
 		elif number_cards_on_table == 4:
-			print "turn"
+			print "TURN"
 			turn_res = self.turn_turn(value)
 		elif number_cards_on_table == 5:
-			print "river"
+			print "RIVER"
 			turn_res = self.turn_river(value)
 		turn_res.verdict()
-		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
+#		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
+		func_to_call(turn_res)
 
 #	def add_message(self, message):
 #		self.store.add_message(message)

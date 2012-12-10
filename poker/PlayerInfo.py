@@ -7,6 +7,17 @@ __author__ = 'anlun'
 class PlayerInfo():
 	# TODO: add is_allined
 	#		and in Table!!!!
+	def set_is_allin(self, value):
+		self.__allin = value
+
+	def is_allin(self):
+		return self.__is_allin
+
+	def set_is_make_turn(self, value):
+		self.__is_make_turn = value
+
+	def is_make_turn(self):
+		return self.__is_make_turn
 
 	def __init__(self, name, hand_cards = [], many = 0, blind = 0, ante = 0, is_hand_hidden = False):
 		self.__name       = name
@@ -16,9 +27,11 @@ class PlayerInfo():
 		self.__ante       = ante
 		self.__is_hand_hidden = is_hand_hidden
 
+		self.__is_make_turn = False
 		self.__is_alive  = True
 		self.__is_folded = False
 		self.__is_active = False # is player making decision right now
+		self.__is_allin = False
 
 		# crl - change receive list
 		self.__crl_cards = []

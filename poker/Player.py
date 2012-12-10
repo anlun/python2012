@@ -13,21 +13,22 @@ class Player:
 		return self.__player_info
 
 	def __check_or_call__(self, value):
-		assert value >= 0
+		assert value >= self.player_info().ante()
 		if value >= self.__player_info.many():
-			return self.__allin__(self.__player_info.many())
+			return self.__allin__()
 		return Turn('check or call', value)
 
 	def __fold__(self):
 		return Turn('fold', 0)
 
 	def __raise__(self, value):
-		assert value >= 0
+		assert value >= self.player_info().ante()
 		if value >= self.__player_info.many():
-			return self.__allin__(self.__player_info.many())
+			return self.__allin__()
 		return Turn('raise', value)
 
-	def __allin__(self, value):
+	def __allin__(self):
+		self.player_info().set_is_allin(True)
 		return Turn('allin', self.__player_info.many() + self.__player_info.ante())
 	
 	def turn(self, value, blind, func_to_call):

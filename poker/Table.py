@@ -30,6 +30,7 @@ class Table(QObject):
 		tsp_num = self.__player_num_by_name(self.__turn_start_player_name)
 		self.__player_queue = self.__player_queue[tsp_num : ] + self.__player_queue[ : tsp_num]
 
+
 	def __player_num_by_name(self, name):
 		i = 0
 		for player in self.__players:
@@ -74,18 +75,25 @@ class Table(QObject):
 				continue
 			if winers.__len__() == 0:
 				winers = {player}
-			for enemy in self.__player_queue:
-				t = cmp_hand(player.player_info().hand_cards(), enemy.player_info().hand_cards())
+			for enemy in winers:
+				t = cmp_hand(player.player_info().hand_cards() + self.__table_info.opened_cards(),
+					enemy.player_info().hand_cards() + self.__table_info.opened_cards())
 				if t == 0:
 					winers |= {player}
 				if t == -1:
 					winers = {player}
+				break
 			player.player_info().set_is_hand_hidden(False)
 
-		assert winers.__len__() != 0
-		bonus = int(self.__table_info.bank() / winers.__len__())
+		assert len(winers)
+		bonus = int(self.__table_info.bank() / len(winers))
 		for player in winers:
+			print 'WIN ', player.player_info().name(), '+ ', bonus
+			msg_box = QMessageBox()
+			msg_box.setText(player.player_info().name())
+			msg_box.exec_()
 			player.player_info().change_many(bonus)
+
 		winers = None
 		# Bank for winner
 		# TODO!!!!!!
@@ -94,9 +102,10 @@ class Table(QObject):
 		self.__table_info.set_bank(0)
 
 		# Clear blinds
+		self.__clear_ante()
 		for player in self.__player_queue:
 			player.player_info().set_blind(0)
-
+			player.player_info().set_is_allin(False)
 		# Delete dead players
 		alive_players  = []
 		for player in self.__player_queue:
@@ -121,9 +130,9 @@ class Table(QObject):
 			self.__player_queue = self.__player_queue[1 : ] + [ self.__player_queue[0] ]
 		self.__turn_start_player_name = self.__player_queue[0].player_info().name()
 		self.round()
-
+#		QTimer.singleShot(200, self.round)
 		# start new round
-		self.round()
+#		self.round()
 
 	# round
 	# 	init
@@ -141,7 +150,12 @@ class Table(QObject):
 		self.__br_visit_list = self.__player_queue[2 : ] + self.__player_queue[0 : 2]
 		self.__bets_and_raises(blind, 'flop')
 
+	def __unmake_turn(self):
+		for player in self.__player_queue:
+			player.player_info().set_is_make_turn(player.player_info().is_allin())
+
 	def __bets_and_raises(self, cur_ante, type):
+		print 'bets!!!'
 		if self.__br_visit_list == []:
 			print 'CCC'
 			if type == 'flop':
@@ -149,10 +163,15 @@ class Table(QObject):
 			else:
 				self.__br_visit_list = self.__player_queue
 
-			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded(), self.__br_visit_list)
+			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded() or x.player_info().is_allin(), self.__br_visit_list)
+			if len(self.__br_visit_list) == 1:
+				QTimer.singleShot(200, self.__clear_round)
+				return
 			# TODO: check len of __br_visit_list
-
-			if self.__br_visit_list[0].player_info().ante() == cur_ante:
+			next_round = False
+			for player in self.__br_visit_list:
+				next_round = next_round or player.player_info().is_make_turn()
+			if next_round:
 				print 'DDDDD', type
 				# go to next type
 				if type == 'flop':
@@ -168,10 +187,21 @@ class Table(QObject):
 		player = self.__br_visit_list[0]
 		self.__br_visit_list = self.__br_visit_list[1 :]
 
-		print 'AAA', player.player_info().name, player.player_info().is_folded()
-		if not player.player_info().is_folded():
+		print 'AAA', player.player_info().name(), \
+					player.player_info().is_folded(), \
+					player.player_info().is_make_turn()
+		if not player.player_info().is_folded() and not player.player_info().is_make_turn():
 			# make_turn
-			self.__make_player_turn(player, cur_ante, type)
+			if player.player_info().many() == 0:
+				player.player_info().set_is_allin(True)
+			if player.player_info().is_allin():
+				player.player_info().set_is_make_turn(True)
+			if not player.player_info().is_make_turn():
+				print "GO", player.player_info().name(), "!!!"
+				self.__make_player_turn(player, cur_ante, type)
+				player.player_info().set_is_make_turn(True)
+			else:
+				self.__bets_and_raises(cur_ante, type)
 		else:
 			self.__bets_and_raises(cur_ante, type)
 
@@ -193,9 +223,10 @@ class Table(QObject):
 
 			player.player_info().set_unactive()
 
-			QTimer.singleShot(200, lambda : self.__bets_and_raises(cur_ante, type))
+			self.__bets_and_raises(cur_ante, type)
 			return
 		else:
+			player.player_info().set_is_make_turn(True)
 			value = turn_res.value()
 			many  = player.player_info().many()
 			ante  = player.player_info().ante()
@@ -209,14 +240,15 @@ class Table(QObject):
 			if verdict == 'allin':
 				value = max(value, cur_ante)
 				
-			QTimer.singleShot(200, lambda : self.__bets_and_raises(value, type))
+#			QTimer.singleShot(200, lambda : self.__bets_and_raises(value, type))
+			self.__bets_and_raises(value, type)
 			return
 
 	def __open_flop(self):
 		self.__table_info.set_opened_cards(self.__deck[0 : 3])
 		self.__deck = self.__deck[3 : ]
 
-		# self.__clear_ante()
+		self.__clear_ante()
 		print 'GGGGG'
 		self.__turn()
 		#QTimer.singleShot(200, self.__turn)
@@ -224,23 +256,27 @@ class Table(QObject):
 	def __turn(self):
 		print 'JJJJJ'
 		self.__br_visit_list = self.__player_queue
+		self.__unmake_turn()
 		self.__bets_and_raises(0, 'turn')
 
 	def __open_turn(self):
 		self.__table_info.add_opened_card(self.__deck[0]) 
 		self.__deck = self.__deck[1 : ]
+#		self.__river()
+		self.__clear_ante()
+		print "GO RIVER"
 		self.__river()
-		# self.__clear_ante()
-
 #		QTimer.singleShot(200, self.__river)
 
 	def __river(self):
 		self.__br_visit_list = self.__player_queue
+		self.__unmake_turn()
 		self.__bets_and_raises(0, 'river')
 
 	def __open_river(self):
 		self.__table_info.add_opened_card(self.__deck[0]) 
 		self.__deck = self.__deck[1 : ]
+		self.__clear_ante()
 		self.__clear_round()
 #		QTimer.singleShot(200, self.__clear_round)
 

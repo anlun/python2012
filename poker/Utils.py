@@ -104,11 +104,8 @@ def is_four(list_of_cards, value):
 
 def is_full_house(list_of_cards, three, pair):
 	mask = get_mask_of_cards(list_of_cards)
-	if bit_count(value_masks[three] & mask) >= 3:
+	if bit_count(value_masks[three] & mask) < 3:
 		return False
-	target = 0
-	for suit in suits:
-		target |= 1 << code_of_card(Card(suit, pair))
 	return bit_count(value_masks[pair] & mask) >= 2
 
 def is_flush(list_of_cards, suit):
@@ -139,9 +136,10 @@ def is_pair(list_of_cards, value):
 	return bit_count(value_masks[value] & mask) >= 2
 
 def cmp_high_card(first_list, second_list, limit):
+	assert len(first_list) == len(second_list)
 	sorted(first_list, key = lambda x: -value_to_int[x.value()])
 	sorted(second_list, key= lambda x: -value_to_int[x.value()])
-	for i in xrange(limit):
+	for i in xrange(min(limit, len(first_list))):
 		if first_list[i].value() > second_list[i].value():
 			return -1
 		if first_list[i].value() < second_list[i].value():
@@ -157,6 +155,8 @@ def cmp_hand(first_list, second_list):
 		start_value = int_to_value[(len(values) + start) % len(values)]
 		first  = is_straight_flush(first_list, start_value)
 		second = is_straight_flush(second_list, start_value)
+		if first or second:
+			print 'straight flush'
 		if first != second:
 			if first:
 				return -1
@@ -168,6 +168,8 @@ def cmp_hand(first_list, second_list):
 	for value in reversed(values):
 		first = is_four(first_list, value)
 		second = is_four(second_list, value)
+		if first or second:
+			print 'four'
 		if first != second:
 			if first:
 				return -1
@@ -186,6 +188,8 @@ def cmp_hand(first_list, second_list):
 				continue
 			first = is_full_house(first_list, three, pair)
 			second = is_full_house(second_list, three, pair)
+			if first or second:
+				print 'full house'
 			if first != second:
 				if first:
 					return -1
@@ -202,8 +206,11 @@ def cmp_hand(first_list, second_list):
 			mask_of_first &= suit_masks[suit]
 			break
 	for suit in suits:
+		if is_flush(second_list, suit):
 			second = 1
 			mask_of_second &= suit_masks[suit]
+	if first or second:
+		print 'flush'
 	if first != second:
 		if first:
 			return  -1
@@ -218,6 +225,8 @@ def cmp_hand(first_list, second_list):
 		start_value = int_to_value[(len(values) + start) % len(values)]
 		first = is_straight(first_list, start_value)
 		second = is_straight(second_list, start_value)
+		if first or second:
+			print 'straight'
 		if first != second:
 			if first:
 				return -1
@@ -229,6 +238,8 @@ def cmp_hand(first_list, second_list):
 	for value in reversed(values):
 		first = is_three(first_list, value)
 		second = is_three(second_list, value)
+		if first or second:
+			print 'three'
 		if first != second:
 			if first:
 				return -1
@@ -243,10 +254,12 @@ def cmp_hand(first_list, second_list):
 	# two pair
 	for  first_pair in reversed(values):
 		for second_pair in reversed(values):
-			if first_pair.value() < second_pair.value():
+			if value_to_int[first_pair] < value_to_int[second_pair]:
 				continue
 			first =  is_two_pair(first_list, first_pair, second_pair)
-			second = is_two_pair(first_list, first_pair, second_pair)
+			second = is_two_pair(second_list, first_pair, second_pair)
+			if first or second:
+				print 'two pair'
 			if first != second:
 				if first:
 					return -1
@@ -264,6 +277,8 @@ def cmp_hand(first_list, second_list):
 	for value in reversed(values):
 		first = is_pair(first_list, value)
 		second = is_pair(second_list, value)
+		if first or second:
+			print 'pair'
 		if first != second:
 			if first:
 				return -1
@@ -276,6 +291,7 @@ def cmp_hand(first_list, second_list):
 								 get_list_cards_from_mask(mask_of_second),
 								 3)
 	# high card
+	print 'high card'
 	return cmp_high_card(first_list, second_list, 5)
 
 def code_of_card(card):
