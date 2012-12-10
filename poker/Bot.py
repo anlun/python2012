@@ -263,8 +263,8 @@ class Bot(Player):
 			print "RIVER"
 			turn_res = self.turn_river(value)
 		turn_res.verdict()
-#		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
-		func_to_call(turn_res)
+		QTimer.singleShot(1000, lambda : func_to_call(turn_res))
+		# func_to_call(turn_res)
 
 #	def add_message(self, message):
 #		self.store.add_message(message)
