@@ -12,6 +12,8 @@ class Table(QObject):
 		self.__table_info = table_info
 		self.__table_gui  = table_gui
 
+		self.__cur_blind = 10
+
 		# self.__players = [Player(player_info, self.__table_info) for player_info in self.__table_info.players()]
 		self.__players = [ (
 			PeoplePlayer(
@@ -132,6 +134,8 @@ class Table(QObject):
 			print self.__player_queue[0].player_info().name()
 			self.__player_queue = self.__player_queue[1 : ] + [ self.__player_queue[0] ]
 		self.__turn_start_player_name = self.__player_queue[0].player_info().name()
+		
+		self.__cur_blind += 10
 		self.round()
 #		QTimer.singleShot(200, self.round)
 		# start new round
@@ -202,7 +206,6 @@ class Table(QObject):
 				player.player_info().set_is_make_turn(True)
 
 			# if not player.player_info().is_make_turn():
-			# if True:
 			print "GO", player.player_info().name(), "!!!"
 			self.__make_player_turn(player, cur_ante, type)
 			player.player_info().set_is_make_turn(True)
@@ -298,7 +301,7 @@ class Table(QObject):
 #		QTimer.singleShot(200, self.__clear_round)
 
 	def __round_blind(self):
-		return 10
+		return self.__cur_blind
 
 	def __next_alive_player(self, player_num):
 		result = player_num + 1
