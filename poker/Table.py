@@ -174,7 +174,7 @@ class Table(QObject):
 			# TODO: check len of __br_visit_list
 			next_round = False
 			for player in self.__br_visit_list:
-				next_round = next_round or player.player_info().is_make_turn() or player.player_info().ante() < cur_ante
+				next_round = next_round or player.player_info().is_make_turn()
 			if next_round:
 				print 'DDDDD', type
 				# go to next type
@@ -194,7 +194,7 @@ class Table(QObject):
 		print 'AAA', player.player_info().name(), \
 					player.player_info().is_folded(), \
 					player.player_info().is_make_turn()
-		if not player.player_info().is_folded(): #and not player.player_info().is_make_turn():
+		if not player.player_info().is_folded() and not player.player_info().is_make_turn():
 			# make_turn
 			if player.player_info().many() == 0:
 				player.player_info().set_is_allin(True)
