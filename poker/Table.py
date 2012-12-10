@@ -202,12 +202,12 @@ class Table(QObject):
 				player.player_info().set_is_make_turn(True)
 
 			# if not player.player_info().is_make_turn():
+			# if True:
 			print "GO", player.player_info().name(), "!!!"
 			self.__make_player_turn(player, cur_ante, type)
 			player.player_info().set_is_make_turn(True)
-
-			else:
-				self.__bets_and_raises(cur_ante, type)
+			# else:
+				# self.__bets_and_raises(cur_ante, type)
 		else:
 			self.__bets_and_raises(cur_ante, type)
 
