@@ -95,6 +95,7 @@ class PlayerInfo():
 		self.__blind = blind
 		for cr in self.__crl_cards:
 			cr.blind_changed()
+			cr.ante_changed()
 
 	def set_ante(self, ante):
 		self.__ante = ante

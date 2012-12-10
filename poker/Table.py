@@ -76,6 +76,8 @@ class Table(QObject):
 			if winers.__len__() == 0:
 				winers = {player}
 			for enemy in winers:
+				assert len(enemy.player_info().hand_cards()) == 2
+				assert len(player.player_info().hand_cards()) == 2
 				t = cmp_hand(player.player_info().hand_cards() + self.__table_info.opened_cards(),
 					enemy.player_info().hand_cards() + self.__table_info.opened_cards())
 				if t == 0:
@@ -165,7 +167,8 @@ class Table(QObject):
 
 			self.__br_visit_list = filter(lambda x: not x.player_info().is_folded() or x.player_info().is_allin(), self.__br_visit_list)
 			if len(self.__br_visit_list) == 1:
-				QTimer.singleShot(200, self.__clear_round)
+#				QTimer.singleShot(200, self.__clear_round)
+				self.__clear_round()
 				return
 			# TODO: check len of __br_visit_list
 			next_round = False

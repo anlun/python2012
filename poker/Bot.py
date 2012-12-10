@@ -30,21 +30,25 @@ class Bot(Player):
 #				result += 1
 #		return result
 	def btc(self, hand_mask, enemy_mask, open_mask):
+#		print bit_count(hand_mask) == bit_count(enemy_mask), 5 - bit_count(open_mask),
+		assert bit_count(hand_mask) == bit_count(enemy_mask)
 		num_rem_cards = 5 - bit_count(open_mask)
 		if num_rem_cards == 0:
+#			for card in get_list_cards_from_mask(open_mask):
+#				card.__print__()
 			tmp = cmp_hand(get_list_cards_from_mask(hand_mask | open_mask),
 						get_list_cards_from_mask(enemy_mask | open_mask))
 			if tmp == -1:
 				return 1.
 			else:
 				return 0.
-		total_mask = open_mask | enemy_mask | open_mask
+		total_mask = hand_mask | enemy_mask | open_mask
 		result = 0.
 		for i in xrange(len(suits) * len(values)):
 			if (total_mask >> i) & 1 == 1:
 				continue
 			result += self.btc(hand_mask, enemy_mask, open_mask | (1 << i))
-		result /= bit_count(total_mask)
+			result /= len(suits) * len(values) - bit_count(total_mask)
 		return result
 
 	def turn_preflop(self, value):
@@ -170,11 +174,12 @@ class Bot(Player):
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
 		opened_mask = get_mask_of_cards(self.__table_info.opened_cards())
 		probablity = 0.
+		assert bit_count(hand_mask) == 2
 		for i in xrange(52):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
 				continue
 			for j in xrange(i):
-				if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
+				if hand_mask & (1 << j) != 0 or opened_mask & (1 << j) != 0:
 					continue
 				enemy_mask = (1 << i) | (1 << j)
 				probablity += self.btc(hand_mask, enemy_mask, opened_mask)
@@ -200,7 +205,7 @@ class Bot(Player):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
 				continue
 			for j in xrange(i):
-				if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
+				if hand_mask & (1 << j) != 0 or opened_mask & (1 << j) != 0:
 					continue
 				enemy_mask = (1 << i) | (1 << j)
 				probability += self.btc(hand_mask, enemy_mask, opened_mask)
@@ -217,7 +222,7 @@ class Bot(Player):
 				return self.__check_or_call__(value)
 
 	def turn_river(self, value):
-		return self.__check_or_call__(value)
+#		return self.__check_or_call__(value)
 		total = len(suits) * len(values)
 		mult = 2. / (total - 7) / (total - 8)
 		hand_mask = get_mask_of_cards(self.__player_info.hand_cards())
@@ -227,7 +232,7 @@ class Bot(Player):
 			if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
 				continue
 			for j in xrange(i):
-				if hand_mask & (1 << i) != 0 or opened_mask & (1 << i) != 0:
+				if hand_mask & (1 << j) != 0 or opened_mask & (1 << j) != 0:
 					continue
 				enemy_mask = (1 << i) | (1 << j)
 				probability += self.btc(hand_mask, enemy_mask, opened_mask)
