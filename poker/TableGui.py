@@ -87,7 +87,7 @@ class TableGui:
 
 			i = 0
 			for card in self.__hand:
-				if self.__player_info.is_hand_hidden():
+				if not self.__player_info.is_hand_hidden():
 					picture_path = card.image_path()
 				else:
 					picture_path = card.jacket_image_path()

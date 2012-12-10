@@ -50,7 +50,8 @@ class Table(QObject):
 		# Deal cards
 		self.__deck = random_shuffle(generate_deck())
 		for player in self.__player_queue:
-			player.player_info().set_is_hand_hidden(True)
+			if not player.is_people_player():
+				player.player_info().set_is_hand_hidden(True)
 			player.player_info().set_hand_cards(self.__deck[0 : 2])
 			self.__deck = self.__deck[2 : ]
 

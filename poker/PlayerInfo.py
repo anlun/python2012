@@ -90,6 +90,8 @@ class PlayerInfo():
 			cr.many_changed()
 	def change_many(self, bonus):
 		self.__many += bonus
+		for cr in self.__crl_cards:
+			cr.many_changed()
 
 	def set_blind(self, blind):
 		self.__blind = blind

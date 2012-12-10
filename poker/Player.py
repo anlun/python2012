@@ -30,6 +30,9 @@ class Player:
 	def __allin__(self):
 		self.player_info().set_is_allin(True)
 		return Turn('allin', self.__player_info.many() + self.__player_info.ante())
+
+	def is_people_player(self):
+		return False
 	
 	def turn(self, value, blind, func_to_call):
 		raise NotImplementedError()
@@ -38,6 +41,9 @@ class PeoplePlayer(Player):
 	def __init__(self, player_info, table_info, decision_block):
 		Player.__init__(self, player_info, table_info)
 		self.__decision_block = decision_block
+
+	def is_people_player(self):
+		return True
 
 	def turn(self, value, blind, func_to_call):
 		# activate buttons
